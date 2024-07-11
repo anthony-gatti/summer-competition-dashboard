@@ -23,6 +23,7 @@ class MainController {
         console.info('Healthcheck called successfully!');
         return res.status(200).json({ ...req.body });
     }
+
 }
 
 export default MainController;
