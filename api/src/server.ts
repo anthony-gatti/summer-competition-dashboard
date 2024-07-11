@@ -13,6 +13,7 @@ import MainController from './controllers/main';
 import { defineRoutes } from './modules/routes';
 import PersonController from './controllers/person';
 import TaskController from './controllers/task';
+import CompletionController from './controllers/completion';
 
 
 export const application = express();
@@ -60,7 +61,7 @@ export const Main = async () => {
     console.info('------------------------------------------');
     console.info('Define Controller Routing');
     console.info('------------------------------------------');
-    defineRoutes([MainController, PersonController, TaskController], application);
+    defineRoutes([MainController, PersonController, TaskController, CompletionController], application);
 
     console.info('------------------------------------------');
     console.info('Define Controller Routing');
