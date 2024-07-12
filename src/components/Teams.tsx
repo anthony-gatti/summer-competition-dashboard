@@ -31,15 +31,17 @@ function Team1Button({
   selected: boolean;
   person: string;
   onTeamClick: () => void;
-  onPersonClick: (name: string, team: number, e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+  onPersonClick: (
+    name: string,
+    team: number,
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => void;
 }) {
   return (
     <div className={`team ${selected ? "selected" : ""}`} onClick={onTeamClick}>
       <div className="team-container">
         <div className="team-content">
-          <div className="team-header">
-            TEAM {number} TOTAL POINTS
-          </div>
+          <div className="team-header">TEAM {number} TOTAL POINTS</div>
           <div className="points">
             <div className="current">1000</div>
             <div className="max">/ 9700</div>
@@ -71,15 +73,17 @@ function Team2Button({
   selected: boolean;
   person: string;
   onTeamClick: () => void;
-  onPersonClick: (name: string, team: number, e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+  onPersonClick: (
+    name: string,
+    team: number,
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => void;
 }) {
   return (
     <div className={`team ${selected ? "selected" : ""}`} onClick={onTeamClick}>
       <div className="team-container">
         <div className="team-content">
-          <div className="team-header">
-            TEAM {number} TOTAL POINTS
-          </div>
+          <div className="team-header">TEAM {number} TOTAL POINTS</div>
           <div className="points">
             <div className="current">1000</div>
             <div className="max">/ 9700</div>
@@ -111,15 +115,17 @@ function Team3Button({
   selected: boolean;
   person: string;
   onTeamClick: () => void;
-  onPersonClick: (name: string, team: number, e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+  onPersonClick: (
+    name: string,
+    team: number,
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => void;
 }) {
   return (
     <div className={`team ${selected ? "selected" : ""}`} onClick={onTeamClick}>
       <div className="team-container">
         <div className="team-content">
-          <div className="team-header">
-            TEAM {number} TOTAL POINTS
-          </div>
+          <div className="team-header">TEAM {number} TOTAL POINTS</div>
           <div className="points">
             <div className="current">1000</div>
             <div className="max">/ 9700</div>
@@ -140,10 +146,17 @@ function Team3Button({
   );
 }
 
-export default function Teams() {
-  const [team, setTeam] = useState<number | null>(null);
-  const [person, setPerson] = useState<string>("");
-
+export default function Teams({
+  team,
+  setTeam,
+  person,
+  setPerson,
+}: {
+  team: number | null;
+  setTeam: React.Dispatch<React.SetStateAction<number | null>>;
+  person: string;
+  setPerson: React.Dispatch<React.SetStateAction<string>>;
+}) {
   const onTeamClick = (number: number) => {
     if (team === number) {
       setTeam(null);
@@ -155,7 +168,11 @@ export default function Teams() {
     }
   };
 
-  const onPersonClick = (name: string, team: number, e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  const onPersonClick = (
+    name: string,
+    team: number,
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
     e.stopPropagation();
     if (person === name) {
       setPerson("");

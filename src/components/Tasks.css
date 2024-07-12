@@ -1,6 +1,27 @@
+.task-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    margin-left: 2rem;
+    margin-right: 2rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.task-header {
+    font-size: 1.2rem;
+    font-weight: 900;
+}
+
+.search-bar {
+    border:solid 1px;
+    border-radius: 20px;
+    height: 2rem;
+    width: 30%;
+}
+
 .task-list {
     display: grid;
-    margin-top:2rem;
     margin-left: 2rem;
     margin-right: 2rem;
     grid-template-columns: repeat(6, 1fr);
@@ -30,8 +51,8 @@
 }
 
 .task-content {
-    height: fill;
-    width:fill;
+    height: stretch;
+    width:stretch;
     padding-right: 1.4rem;
     padding-left: 1.4em;
     padding-top: 0.8rem;
@@ -39,8 +60,8 @@
 }
 
 .task-description {
-    height: fill;
-    width: fill;
+    height: stretch;
+    width: stretch;
     font-size: 1rem;
     overflow: scroll;
 }
@@ -81,12 +102,4 @@
   align-items: start;
   justify-content: center;
   gap:2rem;
-}
-
-.task-model.description {
-    
-}
-
-.task-model.restrictions {
-
 }

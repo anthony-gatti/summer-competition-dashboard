@@ -11,3 +11,18 @@ export const getTasks = async () => {
     throw error;
   }
 };
+
+export const getTasksForPerson = async (person: string, status: string) => {
+  try {
+    const response = await axios.get(API_URL, {
+      params: {
+        name: person,
+        status: status
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching tasks:', error);
+    throw error;
+  }
+};

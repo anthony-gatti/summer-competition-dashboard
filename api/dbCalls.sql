@@ -1,5 +1,5 @@
 CREATE TABLE task( task_id serial PRIMARY Key, task_name VARCHAR(256), description text, points int, restrictions text, repititions int, team boolean );
-CREATE TABLE completion ( completion_id serial PRIMARY KEY, person_id integer REFERENCES person(person_id), task_id integer REFERENCES task(task_id), comment varchar(256) NOT NULL, link varchar(256) NOT NULL );
+CREATE TABLE completion ( completion_id serial PRIMARY KEY, person_id integer REFERENCES person(person_id), task_id integer REFERENCES task(task_id), comment varchar(256), link varchar(256) );
 DROP TABLE task;
 
 INSERT INTO task (task_name, description, points, restrictions, repititions, team) VALUES 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { getTasks } from "../services/taskService";
+import { getTasks, getTasksForPerson } from "../services/taskService";
 import { Task } from "../types";
 import "./Tasks.css";
 
@@ -56,23 +56,43 @@ function Modal({ task, onClose }: { task: Task; onClose: () => void }) {
   );
 }
 
-export default function Tasks() {
+export default function Tasks({
+  team,
+  setTeam,
+  person,
+  setPerson,
+}: {
+  team: number | null;
+  setTeam: React.Dispatch<React.SetStateAction<number | null>>;
+  person: string;
+  setPerson: React.Dispatch<React.SetStateAction<string>>;
+}) {
   const [tasks, setTasks] = useState<Task[]>();
+  const [completedTasks, setCompletedTasks] = useState<Task[]>();
   const [selectedTask, setSelectedTask] = useState<Task>();
 
   useEffect(() => {
     const fetchTasks = async () => {
+      console.log("Person: " + person);
       try {
-        const data = await getTasks();
-        console.log(data);
-        setTasks(data);
+        if (person === "") {
+          const data = await getTasks();
+          console.log(data);
+          setTasks(data);
+          setCompletedTasks(undefined);
+        } else {
+          const data = await getTasksForPerson(person, "available");
+          setTasks(data);
+          const compData = await getTasksForPerson(person, "completed");
+          setCompletedTasks(compData);
+        }
       } catch (error) {
         console.error("Failed to fetch tasks:", error);
       }
     };
 
     fetchTasks();
-  }, []);
+  }, [person]);
 
   const onClick = (task: Task) => {
     if (task === selectedTask) {
@@ -87,20 +107,48 @@ export default function Tasks() {
   };
 
   return (
-    <div className="task-list">
-      {tasks?.map((task: Task) => (
-        <TaskButton
-          number={task.task_id}
-          name={task.task_name}
-          description={task.description}
-          restrictions={task.restrictions}
-          selected={selectedTask === task}
-          onClick={() => onClick(task)}
-        />
-      ))}
-      {selectedTask !== undefined && (
-        <Modal task={selectedTask} onClose={closeModal} />
+    <>
+      <div className="task-bar">
+        <div className="task-header">Available tasks:</div>
+        <div className="search-bar">Search</div>
+      </div>
+      <div className="task-list">
+        {tasks?.map((task: Task) => (
+          <TaskButton
+            number={task.task_id}
+            name={task.task_name}
+            description={task.description}
+            restrictions={task.restrictions}
+            selected={selectedTask === task}
+            onClick={() => onClick(task)}
+          />
+        ))}
+        {selectedTask !== undefined && (
+          <Modal task={selectedTask} onClose={closeModal} />
+        )}
+      </div>
+      {completedTasks !== undefined && (completedTasks.length>0) && (
+        <>
+          <div className="task-bar">
+            <div className="task-header">Completed tasks:</div>
+          </div>
+          <div className="task-list">
+            {completedTasks?.map((task: Task) => (
+              <TaskButton
+                number={task.task_id}
+                name={task.task_name}
+                description={task.description}
+                restrictions={task.restrictions}
+                selected={selectedTask === task}
+                onClick={() => onClick(task)}
+              />
+            ))}
+            {selectedTask !== undefined && (
+              <Modal task={selectedTask} onClose={closeModal} />
+            )}
+          </div>
+        </>
       )}
-    </div>
+    </>
   );
 }
