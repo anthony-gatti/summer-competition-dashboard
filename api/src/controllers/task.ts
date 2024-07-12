@@ -20,8 +20,17 @@ class TaskController {
     @Route('post', '/')
     async create(req: Request, res: Response, next: NextFunction) {
         try {
-            const { task_name, points, repititions } = req.body;
-            const newTask = await db.insert(task).values({ task_name: task_name, points: points, repititions: repititions });
+            const { task_name, description, points, restrictions, repititions, team } = req.body;
+            const newTask = await db
+                .insert(task)
+                .values({
+                    task_name: task_name,
+                    description: description,
+                    points: points,
+                    restrictions: restrictions,
+                    repititions: repititions,
+                    team: team
+                });
             return res.status(201).json(newTask);
         } catch (error) {
             console.error('Error creating task:', error);

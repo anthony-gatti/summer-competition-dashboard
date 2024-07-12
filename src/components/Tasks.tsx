@@ -1,12 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { getTasks } from "../services/taskService";
+import { Task } from "../types";
 import "./Tasks.css";
 
 function TaskButton({
-  number,
+  description,
   selected,
   onClick,
 }: {
   number: number;
+  name: string;
+  description: string;
+  restrictions: string;
   selected: boolean;
   onClick: () => void;
 }) {
@@ -14,7 +19,7 @@ function TaskButton({
     <button className={`task ${selected ? "selected" : ""}`} onClick={onClick}>
       <div className="task-container">
         <div className="task-content">
-          {number}
+          <div className="task-description">{description}</div>
           <div className="info-button">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
               <title>task-info</title>
@@ -27,44 +32,75 @@ function TaskButton({
   );
 }
 
-function Modal({ task, onClose }: { task: number; onClose: () => void }) {
+function Modal({ task, onClose }: { task: Task; onClose: () => void }) {
   return (
     <div className="task-overlay" onClick={onClose}>
       <div
         className="task-overlay-content"
         onClick={(e) => e.stopPropagation()}
       >
-        <p>Task Number: {task}</p>
+        <div className="task-popup">
+          <div className="task-popup-header">
+            <strong>Description:</strong>
+          </div>
+          {task.description}
+        </div>
+        <div className="task-popup">
+          <div className="task-popup-header">
+            <strong>Restrictions:</strong>
+          </div>
+          {task.restrictions}
+        </div>
       </div>
     </div>
   );
 }
 
 export default function Tasks() {
-  const [task, setTask] = useState(0);
+  const [tasks, setTasks] = useState<Task[]>();
+  const [selectedTask, setSelectedTask] = useState<Task>();
 
-  const onClick = (id: number) => {
-    if (id === task) {
-      setTask(0);
+  useEffect(() => {
+    const fetchTasks = async () => {
+      try {
+        const data = await getTasks();
+        console.log(data);
+        setTasks(data);
+      } catch (error) {
+        console.error("Failed to fetch tasks:", error);
+      }
+    };
+
+    fetchTasks();
+  }, []);
+
+  const onClick = (task: Task) => {
+    if (task === selectedTask) {
+      setSelectedTask(undefined);
     } else {
-      setTask(id);
+      setSelectedTask(task);
     }
   };
 
   const closeModal = () => {
-    setTask(0);
+    setSelectedTask(undefined);
   };
 
   return (
     <div className="task-list">
-      <TaskButton number={1} selected={task === 1} onClick={() => onClick(1)} />
-      <TaskButton number={2} selected={task === 2} onClick={() => onClick(2)} />
-      <TaskButton number={3} selected={task === 3} onClick={() => onClick(3)} />
-      <TaskButton number={4} selected={task === 4} onClick={() => onClick(4)} />
-      <TaskButton number={5} selected={task === 5} onClick={() => onClick(5)} />
-      <TaskButton number={6} selected={task === 6} onClick={() => onClick(6)} />
-
-      {task !== 0 && <Modal task={task} onClose={closeModal} />}
+      {tasks?.map((task: Task) => (
+        <TaskButton
+          number={task.task_id}
+          name={task.task_name}
+          description={task.description}
+          restrictions={task.restrictions}
+          selected={selectedTask === task}
+          onClick={() => onClick(task)}
+        />
+      ))}
+      {selectedTask !== undefined && (
+        <Modal task={selectedTask} onClose={closeModal} />
+      )}
     </div>
   );
 }
