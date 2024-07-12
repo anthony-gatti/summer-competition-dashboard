@@ -164,19 +164,31 @@ export default function Teams({
   person: string;
   setPerson: React.Dispatch<React.SetStateAction<string>>;
 }) {
-  const [team1Points, setTeam1Points] = useState<Number>(0);
-  const [team2Points, setTeam2Points] = useState<Number>(0);
-  const [team3Points, setTeam3Points] = useState<Number>(0);
+  const [team1Points, setTeam1Points] = useState<number>(0);
+  const [team2Points, setTeam2Points] = useState<number>(0);
+  const [team3Points, setTeam3Points] = useState<number>(0);
 
   useEffect(() => {
     const fetchTasks = async () => {
       try {
         const data1 = await getTeamPoints(1);
-        setTeam1Points(data1);
+        if(data1.total_points){
+          setTeam1Points(data1.total_points);
+        } else {
+          setTeam1Points(0);
+        }
         const data2 = await getTeamPoints(2);
-        setTeam2Points(data2);
+        if(data2.total_points){
+          setTeam2Points(data2.total_points);
+        } else {
+          setTeam2Points(0);
+        }
         const data3 = await getTeamPoints(3);
-        setTeam3Points(data3);
+        if(data3.total_points){
+          setTeam3Points(data3.total_points);
+        } else {
+          setTeam3Points(0);
+        }
       } catch (error) {
         console.error("Failed to fetch team points:", error);
       }
