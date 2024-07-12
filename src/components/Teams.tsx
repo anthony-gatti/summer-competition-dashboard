@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { getTeamPoints } from "../services/teamService";
 import "./Teams.css";
 
 function PersonButton({
@@ -23,12 +24,14 @@ function PersonButton({
 function Team1Button({
   number,
   selected,
+  points,
   person,
   onTeamClick,
   onPersonClick,
 }: {
   number: number;
   selected: boolean;
+  points: number;
   person: string;
   onTeamClick: () => void;
   onPersonClick: (
@@ -43,7 +46,7 @@ function Team1Button({
         <div className="team-content">
           <div className="team-header">TEAM {number} TOTAL POINTS</div>
           <div className="points">
-            <div className="current">1000</div>
+            <div className="current">{points}</div>
             <div className="max">/ 9700</div>
           </div>
           <div className="members">
@@ -65,12 +68,14 @@ function Team1Button({
 function Team2Button({
   number,
   selected,
+  points,
   person,
   onTeamClick,
   onPersonClick,
 }: {
   number: number;
   selected: boolean;
+  points: number;
   person: string;
   onTeamClick: () => void;
   onPersonClick: (
@@ -85,7 +90,7 @@ function Team2Button({
         <div className="team-content">
           <div className="team-header">TEAM {number} TOTAL POINTS</div>
           <div className="points">
-            <div className="current">1000</div>
+            <div className="current">{points}</div>
             <div className="max">/ 9700</div>
           </div>
           <div className="members">
@@ -107,12 +112,14 @@ function Team2Button({
 function Team3Button({
   number,
   selected,
+  points,
   person,
   onTeamClick,
   onPersonClick,
 }: {
   number: number;
   selected: boolean;
+  points: number;
   person: string;
   onTeamClick: () => void;
   onPersonClick: (
@@ -127,7 +134,7 @@ function Team3Button({
         <div className="team-content">
           <div className="team-header">TEAM {number} TOTAL POINTS</div>
           <div className="points">
-            <div className="current">1000</div>
+            <div className="current">{points}</div>
             <div className="max">/ 9700</div>
           </div>
           <div className="members">
@@ -157,6 +164,27 @@ export default function Teams({
   person: string;
   setPerson: React.Dispatch<React.SetStateAction<string>>;
 }) {
+  const [team1Points, setTeam1Points] = useState<Number>(0);
+  const [team2Points, setTeam2Points] = useState<Number>(0);
+  const [team3Points, setTeam3Points] = useState<Number>(0);
+
+  useEffect(() => {
+    const fetchTasks = async () => {
+      try {
+        const data1 = await getTeamPoints(1);
+        setTeam1Points(data1);
+        const data2 = await getTeamPoints(2);
+        setTeam2Points(data2);
+        const data3 = await getTeamPoints(3);
+        setTeam3Points(data3);
+      } catch (error) {
+        console.error("Failed to fetch team points:", error);
+      }
+    };
+
+    fetchTasks();
+  }, []);
+
   const onTeamClick = (number: number) => {
     if (team === number) {
       setTeam(null);
@@ -188,6 +216,7 @@ export default function Teams({
       <Team1Button
         number={1}
         selected={team === 1 || team === null}
+        points={team1Points}
         person={team === 1 ? person : ""}
         onTeamClick={() => onTeamClick(1)}
         onPersonClick={onPersonClick}
@@ -195,6 +224,7 @@ export default function Teams({
       <Team2Button
         number={2}
         selected={team === 2 || team === null}
+        points={team2Points}
         person={team === 2 ? person : ""}
         onTeamClick={() => onTeamClick(2)}
         onPersonClick={onPersonClick}
@@ -202,6 +232,7 @@ export default function Teams({
       <Team3Button
         number={3}
         selected={team === 3 || team === null}
+        points={team3Points}
         person={team === 3 ? person : ""}
         onTeamClick={() => onTeamClick(3)}
         onPersonClick={onPersonClick}
