@@ -136,7 +136,12 @@ function SubmissionForm({
 
   useEffect(() => {
     const fetchTasks = async () => {
-      if (name !== "") {
+      if (
+        name !== "" &&
+        name !== "Team 1" &&
+        name !== "Team 2" &&
+        name !== "Team 3"
+      ) {
         try {
           const data = await getTasksForPerson(name, "available");
           const taskNames = data.map(
@@ -150,6 +155,19 @@ function SubmissionForm({
         try {
           if (team !== 0) {
             const data = await getTasksForTeam(team, "available");
+            const taskNames = data.map(
+              (task: { task_name: string }) => task.task_name
+            );
+            setAvailableTasks(taskNames);
+          } else if (
+            name === "Team 1" ||
+            name === "Team 2" ||
+            name === "Team 3"
+          ) {
+            const data = await getTasksForTeam(
+              Number(name.charAt(name.length - 1)),
+              "available"
+            );
             const taskNames = data.map(
               (task: { task_name: string }) => task.task_name
             );
