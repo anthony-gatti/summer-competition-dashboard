@@ -40,11 +40,15 @@ function Team1Button({
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => void;
 }) {
+  let name = "TEAM " + number;
+  if(selected && person !== "") {
+    name = person.toUpperCase() + "'S ";
+  }
   return (
     <div className={`team ${selected ? "selected" : ""}`} onClick={onTeamClick}>
       <div className="team-container">
         <div className="team-content">
-          <div className="team-header">TEAM {number} TOTAL POINTS</div>
+          <div className="team-header">{name} POINTS</div>
           <div className="points">
             <div className="current">{points}</div>
             <div className="max">/ 9700</div>
@@ -84,11 +88,15 @@ function Team2Button({
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => void;
 }) {
+  let name = "TEAM " + number;
+  if(selected && person !== "") {
+    name = person.toUpperCase() + "'S ";
+  }
   return (
     <div className={`team ${selected ? "selected" : ""}`} onClick={onTeamClick}>
       <div className="team-container">
         <div className="team-content">
-          <div className="team-header">TEAM {number} TOTAL POINTS</div>
+          <div className="team-header">{name} POINTS</div>
           <div className="points">
             <div className="current">{points}</div>
             <div className="max">/ 9700</div>
@@ -128,11 +136,15 @@ function Team3Button({
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => void;
 }) {
+  let name = "TEAM " + number;
+  if(selected && person !== "") {
+    name = person.toUpperCase() + "'S ";
+  }
   return (
     <div className={`team ${selected ? "selected" : ""}`} onClick={onTeamClick}>
       <div className="team-container">
         <div className="team-content">
-          <div className="team-header">TEAM {number} TOTAL POINTS</div>
+          <div className="team-header">{name} POINTS</div>
           <div className="points">
             <div className="current">{points}</div>
             <div className="max">/ 9700</div>
@@ -171,19 +183,36 @@ export default function Teams({
   useEffect(() => {
     const fetchTasks = async () => {
       try {
-        const data1 = await getTeamPoints(1);
+        let data1;
+        if(person!=="" && team===1){
+          data1 = await getPersonPoints(person);
+        }else {
+          data1 = await getTeamPoints(1);
+        }
         if(data1.total_points){
           setTeam1Points(data1.total_points);
         } else {
           setTeam1Points(0);
         }
-        const data2 = await getTeamPoints(2);
+
+        let data2;
+        if(person!=="" && team===2){
+          data2 = await getPersonPoints(person);
+        }else {
+          data2 = await getTeamPoints(2);
+        }
         if(data2.total_points){
           setTeam2Points(data2.total_points);
         } else {
           setTeam2Points(0);
         }
-        const data3 = await getTeamPoints(3);
+
+        let data3;
+        if(person!=="" && team===3){
+          data3 = await getPersonPoints(person);
+        }else {
+          data3 = await getTeamPoints(3);
+        }
         if(data3.total_points){
           setTeam3Points(data3.total_points);
         } else {
@@ -195,7 +224,7 @@ export default function Teams({
     };
 
     fetchTasks();
-  }, []);
+  }, [person, team]);
 
   const onTeamClick = (number: number) => {
     if (team === number) {
