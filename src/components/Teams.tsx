@@ -222,7 +222,6 @@ export default function Teams({
     } else {
       setTeam(number);
       setPerson("");
-      console.log("Person unset");
     }
   };
 

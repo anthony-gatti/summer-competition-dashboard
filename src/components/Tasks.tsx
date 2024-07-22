@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { getTasks, getTasksForPerson } from "../services/taskService";
+import { getTasks, getTasksForPerson, getTasksForTeam } from "../services/taskService";
 import { Task } from "../types";
 import "./Tasks.css";
 
@@ -44,7 +44,7 @@ function AddButton({ task }: { task: Task }) {
   );
 }
 
-function Modal({ task, completed, onClose }: { task: Task; completed: boolean; onClose: () => void }) {
+function TaskInfo({ task, completed, onClose }: { task: Task; completed: boolean; onClose: () => void }) {
   return (
     <div className="task-overlay" onClick={onClose}>
       <div
@@ -88,13 +88,21 @@ export default function Tasks({
 
   useEffect(() => {
     const fetchTasks = async () => {
-      console.log("Person: " + person);
       try {
         if (person === "") {
-          const data = await getTasks();
-          console.log(data);
-          setTasks(data);
-          setCompletedTasks(undefined);
+          if(team === null) {
+            const data = await getTasks();
+            console.log(data);
+            setTasks(data);
+            setCompletedTasks(undefined);
+          } else {
+            const data = await getTasksForTeam(team, "available");
+            console.log("AVAILABLE TEAM TASKS: ", data);
+            setTasks(data);
+            const compData = await getTasksForTeam(team, "completed");
+            console.log("COMPLETED TEAM TASKS: ", compData);
+            setCompletedTasks(compData);
+          }
         } else {
           const data = await getTasksForPerson(person, "available");
           setTasks(data);
@@ -107,7 +115,7 @@ export default function Tasks({
     };
 
     fetchTasks();
-  }, [person]);
+  }, [person, team]);
 
   const onClick = (task: Task, completed: boolean) => {
     if (task === selectedTask) {
@@ -118,7 +126,7 @@ export default function Tasks({
     setCompletedTask(completed);
   };
 
-  const closeModal = () => {
+  const closeTaskInfo = () => {
     setSelectedTask(undefined);
   };
 
@@ -140,7 +148,7 @@ export default function Tasks({
           />
         ))}
         {selectedTask !== undefined  && isCompletedTask===false && (
-          <Modal task={selectedTask} completed={false} onClose={closeModal} />
+          <TaskInfo task={selectedTask} completed={false} onClose={closeTaskInfo} />
         )}
       </div>
       {completedTasks !== undefined && completedTasks.length > 0 && (
@@ -160,7 +168,7 @@ export default function Tasks({
               />
             ))}
             {selectedTask !== undefined && isCompletedTask===true && (
-              <Modal task={selectedTask} completed={true} onClose={closeModal} />
+              <TaskInfo task={selectedTask} completed={true} onClose={closeTaskInfo} />
             )}
           </div>
         </>
