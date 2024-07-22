@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { getTasks, getTasksForPerson, getTasksForTeam } from "../services/taskService";
-import { Task } from "../types";
+import { getPeople } from "../services/personService";
+import {
+  getTasks,
+  getTasksForPerson,
+  getTasksForTeam,
+} from "../services/taskService";
+import { Task, Person } from "../types";
 import "./Tasks.css";
 
 function TaskButton({
@@ -32,19 +37,35 @@ function TaskButton({
   );
 }
 
-function AddButton({ setSubmissionForm }: { setSubmissionForm: (value: boolean) => void }) {
+function AddButton({
+  setSubmissionForm,
+}: {
+  setSubmissionForm: (value: boolean) => void;
+}) {
   const onAddClick = () => {
     setSubmissionForm(true);
   };
 
   return (
     <div className="task-button">
-      <button className="add" onClick={onAddClick}>Add a submission!</button>
+      <button className="add" onClick={onAddClick}>
+        Add a submission!
+      </button>
     </div>
   );
 }
 
-function TaskInfo({ task, completed, onClose, setSubmissionForm }: { task: Task; completed: boolean; onClose: () => void; setSubmissionForm: (value: boolean) => void }) {
+function TaskInfo({
+  task,
+  completed,
+  onClose,
+  setSubmissionForm,
+}: {
+  task: Task;
+  completed: boolean;
+  onClose: () => void;
+  setSubmissionForm: (value: boolean) => void;
+}) {
   return (
     <div className="task-overlay" onClick={onClose}>
       <div
@@ -70,11 +91,23 @@ function TaskInfo({ task, completed, onClose, setSubmissionForm }: { task: Task;
   );
 }
 
-function SubmissionForm({ person, selectedTask, onClose }: { person: string, selectedTask: string, onClose: () => void }) {
+function SubmissionForm({
+  person,
+  team,
+  selectedTask,
+  onClose,
+}: {
+  person: string;
+  team: number;
+  selectedTask: string;
+  onClose: () => void;
+}) {
+  const [people, setPeople] = useState<string[]>();
+  const [availableTasks, setAvailableTasks] = useState<string[]>();
   const [name, setName] = useState<string>(person);
   const [task, setTask] = useState<string>(selectedTask);
-  const [comment, setComment] = useState<string>('');
-  const [link, setLink] = useState<string>('');
+  const [comment, setComment] = useState<string>("");
+  const [link, setLink] = useState<string>("");
 
   const handleSubmit = () => {
     // Handle the submission logic here
@@ -82,10 +115,60 @@ function SubmissionForm({ person, selectedTask, onClose }: { person: string, sel
       name,
       task,
       comment,
-      link
+      link,
     });
     onClose();
   };
+
+  useEffect(() => {
+    const fetchPeople = async () => {
+      try {
+        const data = await getPeople();
+        const names = data.map((person: { name: string }) => person.name);
+        setPeople(names);
+      } catch (error) {
+        console.error("Failed to fetch people:", error);
+      }
+    };
+
+    fetchPeople();
+  }, []);
+
+  useEffect(() => {
+    const fetchTasks = async () => {
+      if (name !== "") {
+        try {
+          const data = await getTasksForPerson(name, "available");
+          const taskNames = data.map(
+            (task: { task_name: string }) => task.task_name
+          );
+          setAvailableTasks(taskNames);
+        } catch (error) {
+          console.error("Failed to fetch tasks:", error);
+        }
+      } else {
+        try {
+          if (team !== 0) {
+            const data = await getTasksForTeam(team, "available");
+            const taskNames = data.map(
+              (task: { task_name: string }) => task.task_name
+            );
+            setAvailableTasks(taskNames);
+          } else {
+            const data = await getTasks();
+            const taskNames = data.map(
+              (task: { task_name: string }) => task.task_name
+            );
+            setAvailableTasks(taskNames);
+          }
+        } catch (error) {
+          console.error("Failed to fetch tasks:", error);
+        }
+      }
+    };
+
+    fetchTasks();
+  }, [name, team]);
 
   return (
     <div className="task-overlay" onClick={onClose}>
@@ -96,25 +179,39 @@ function SubmissionForm({ person, selectedTask, onClose }: { person: string, sel
         <div className="submission-form">
           <div className="form-field">
             <label htmlFor="name">Name*</label>
-            <input
+            <select
               id="name"
-              type="text"
-              placeholder="Name"
               required
               value={name}
               onChange={(e) => setName(e.target.value)}
-            />
+            >
+              <option value="" disabled>
+                Select a person
+              </option>
+              {people?.map((person, index) => (
+                <option key={index} value={person}>
+                  {person}
+                </option>
+              ))}
+            </select>
           </div>
           <div className="form-field">
             <label htmlFor="task">Task*</label>
-            <input
+            <select
               id="task"
-              type="text"
-              placeholder="Task"
               required
               value={task}
               onChange={(e) => setTask(e.target.value)}
-            />
+            >
+              <option value="" disabled>
+                Select a task
+              </option>
+              {availableTasks?.map((task, index) => (
+                <option key={index} value={task}>
+                  {task}
+                </option>
+              ))}
+            </select>
           </div>
           <div className="form-field">
             <label htmlFor="comment">Comments</label>
@@ -136,7 +233,7 @@ function SubmissionForm({ person, selectedTask, onClose }: { person: string, sel
               onChange={(e) => setLink(e.target.value)}
             />
           </div>
-          <div className='submit-button'>
+          <div className="submit-button">
             <button className="add" onClick={handleSubmit}>
               Submit
             </button>
@@ -162,13 +259,15 @@ export default function Tasks({
   const [completedTasks, setCompletedTasks] = useState<Task[]>();
   const [selectedTask, setSelectedTask] = useState<Task>();
   const [isCompletedTask, setCompletedTask] = useState<boolean | undefined>();
-  const [submissionForm, setSubmissionForm] = useState<boolean | undefined>(false);
+  const [submissionForm, setSubmissionForm] = useState<boolean | undefined>(
+    false
+  );
 
   useEffect(() => {
     const fetchTasks = async () => {
       try {
         if (person === "") {
-          if(team === null) {
+          if (team === null) {
             const data = await getTasks();
             console.log(data);
             setTasks(data);
@@ -229,11 +328,21 @@ export default function Tasks({
             onClick={() => onClick(task, false)}
           />
         ))}
-        {selectedTask !== undefined  && isCompletedTask===false && (
-          <TaskInfo task={selectedTask} completed={false} onClose={closeTaskInfo} setSubmissionForm={setSubmissionForm}/>
+        {selectedTask !== undefined && isCompletedTask === false && (
+          <TaskInfo
+            task={selectedTask}
+            completed={false}
+            onClose={closeTaskInfo}
+            setSubmissionForm={setSubmissionForm}
+          />
         )}
         {submissionForm && (
-          <SubmissionForm person={person} selectedTask={selectedTask?.task_name || ""} onClose={closeSubmissionForm}/>
+          <SubmissionForm
+            person={person}
+            team={team || 0}
+            selectedTask={selectedTask?.task_name || ""}
+            onClose={closeSubmissionForm}
+          />
         )}
       </div>
       {completedTasks !== undefined && completedTasks.length > 0 && (
@@ -252,8 +361,13 @@ export default function Tasks({
                 onClick={() => onClick(task, true)}
               />
             ))}
-            {selectedTask !== undefined && isCompletedTask===true && (
-              <TaskInfo task={selectedTask} completed={true} onClose={closeTaskInfo} setSubmissionForm={setSubmissionForm}/>
+            {selectedTask !== undefined && isCompletedTask === true && (
+              <TaskInfo
+                task={selectedTask}
+                completed={true}
+                onClose={closeTaskInfo}
+                setSubmissionForm={setSubmissionForm}
+              />
             )}
           </div>
         </>

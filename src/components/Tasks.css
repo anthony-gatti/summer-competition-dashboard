@@ -165,12 +165,20 @@
 }
 
 .form-field input {
-  width: calc(100% - 20px);
+  width: fill;
   padding: 8px 10px;
   border: 1px solid #ccc;
   border-radius: 4px;
   font-weight: 600;
 }
+
+.form-field select {
+    width: fill;
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+  }
 
 .submit-button {
     display: flex;
