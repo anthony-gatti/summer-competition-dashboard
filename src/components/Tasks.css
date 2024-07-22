@@ -131,6 +131,48 @@
     font-weight: 800;
     font-size: 1.1rem;
     background-color: rgb(86, 151, 255);
+    cursor: pointer;
     height: 2rem;
     width: 12rem;
+}
+
+.add:hover {
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-weight: 800;
+    font-size: 1.1rem;
+    background-color: rgb(64, 135, 249);
+    cursor: pointer;
+    height: 2rem;
+    width: 12rem;
+}
+
+.submission-form {
+  width: 100%;
+}
+
+.form-field {
+  margin-bottom: 15px;
+  width: 100%;
+}
+
+.form-field label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 650;
+  font-size: 1.1rem;
+}
+
+.form-field input {
+  width: calc(100% - 20px);
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.submit-button {
+    display: flex;
+    justify-content: center;
 }

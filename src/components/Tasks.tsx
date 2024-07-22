@@ -32,9 +32,9 @@ function TaskButton({
   );
 }
 
-function AddButton({ task }: { task: Task }) {
+function AddButton({ setSubmissionForm }: { setSubmissionForm: (value: boolean) => void }) {
   const onAddClick = () => {
-    alert();
+    setSubmissionForm(true);
   };
 
   return (
@@ -44,7 +44,7 @@ function AddButton({ task }: { task: Task }) {
   );
 }
 
-function TaskInfo({ task, completed, onClose }: { task: Task; completed: boolean; onClose: () => void }) {
+function TaskInfo({ task, completed, onClose, setSubmissionForm }: { task: Task; completed: boolean; onClose: () => void; setSubmissionForm: (value: boolean) => void }) {
   return (
     <div className="task-overlay" onClick={onClose}>
       <div
@@ -64,7 +64,84 @@ function TaskInfo({ task, completed, onClose }: { task: Task; completed: boolean
           </div>
           {task.restrictions}
         </div>
-        {!completed && <AddButton task={task} />}
+        {!completed && <AddButton setSubmissionForm={setSubmissionForm} />}
+      </div>
+    </div>
+  );
+}
+
+function SubmissionForm({ person, selectedTask, onClose }: { person: string, selectedTask: string, onClose: () => void }) {
+  const [name, setName] = useState<string>(person);
+  const [task, setTask] = useState<string>(selectedTask);
+  const [comment, setComment] = useState<string>('');
+  const [link, setLink] = useState<string>('');
+
+  const handleSubmit = () => {
+    // Handle the submission logic here
+    console.log({
+      name,
+      task,
+      comment,
+      link
+    });
+    onClose();
+  };
+
+  return (
+    <div className="task-overlay" onClick={onClose}>
+      <div
+        className="task-overlay-content"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="submission-form">
+          <div className="form-field">
+            <label htmlFor="name">Name*</label>
+            <input
+              id="name"
+              type="text"
+              placeholder="Name"
+              required
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+          </div>
+          <div className="form-field">
+            <label htmlFor="task">Task*</label>
+            <input
+              id="task"
+              type="text"
+              placeholder="Task"
+              required
+              value={task}
+              onChange={(e) => setTask(e.target.value)}
+            />
+          </div>
+          <div className="form-field">
+            <label htmlFor="comment">Comments</label>
+            <input
+              id="comment"
+              type="text"
+              placeholder="Comments"
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+            />
+          </div>
+          <div className="form-field">
+            <label htmlFor="link">Link</label>
+            <input
+              id="link"
+              type="text"
+              placeholder="Link"
+              value={link}
+              onChange={(e) => setLink(e.target.value)}
+            />
+          </div>
+          <div className='submit-button'>
+            <button className="add" onClick={handleSubmit}>
+              Submit
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -85,6 +162,7 @@ export default function Tasks({
   const [completedTasks, setCompletedTasks] = useState<Task[]>();
   const [selectedTask, setSelectedTask] = useState<Task>();
   const [isCompletedTask, setCompletedTask] = useState<boolean | undefined>();
+  const [submissionForm, setSubmissionForm] = useState<boolean | undefined>(false);
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -130,6 +208,10 @@ export default function Tasks({
     setSelectedTask(undefined);
   };
 
+  const closeSubmissionForm = () => {
+    setSubmissionForm(false);
+  };
+
   return (
     <>
       <div className="task-bar">
@@ -148,7 +230,10 @@ export default function Tasks({
           />
         ))}
         {selectedTask !== undefined  && isCompletedTask===false && (
-          <TaskInfo task={selectedTask} completed={false} onClose={closeTaskInfo} />
+          <TaskInfo task={selectedTask} completed={false} onClose={closeTaskInfo} setSubmissionForm={setSubmissionForm}/>
+        )}
+        {submissionForm && (
+          <SubmissionForm person={person} selectedTask={selectedTask?.task_name || ""} onClose={closeSubmissionForm}/>
         )}
       </div>
       {completedTasks !== undefined && completedTasks.length > 0 && (
@@ -168,7 +253,7 @@ export default function Tasks({
               />
             ))}
             {selectedTask !== undefined && isCompletedTask===true && (
-              <TaskInfo task={selectedTask} completed={true} onClose={closeTaskInfo} />
+              <TaskInfo task={selectedTask} completed={true} onClose={closeTaskInfo} setSubmissionForm={setSubmissionForm}/>
             )}
           </div>
         </>
