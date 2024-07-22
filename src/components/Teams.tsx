@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { getTeamPoints } from "../services/teamService";
+import { getPersonPoints } from "../services/personService";
 import "./Teams.css";
 
 function PersonButton({
