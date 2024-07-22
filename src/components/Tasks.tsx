@@ -32,6 +32,18 @@ function TaskButton({
   );
 }
 
+function AddButton({ task }: { task: Task }) {
+  const onAddClick = () => {
+    alert();
+  };
+
+  return (
+    <div className="task-button">
+      <button className="add" onClick={onAddClick}>Add a submission!</button>
+    </div>
+  );
+}
+
 function Modal({ task, onClose }: { task: Task; onClose: () => void }) {
   return (
     <div className="task-overlay" onClick={onClose}>
@@ -39,18 +51,20 @@ function Modal({ task, onClose }: { task: Task; onClose: () => void }) {
         className="task-overlay-content"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="task-popup">
+        <div className="task-popup-section">
           <div className="task-popup-header">
             <strong>Description:</strong>
           </div>
           {task.description}
         </div>
-        <div className="task-popup">
+        <div className="divider"></div>
+        <div className="task-popup-section">
           <div className="task-popup-header">
             <strong>Restrictions:</strong>
           </div>
           {task.restrictions}
         </div>
+        <AddButton task={task} />
       </div>
     </div>
   );
@@ -127,7 +141,7 @@ export default function Tasks({
           <Modal task={selectedTask} onClose={closeModal} />
         )}
       </div>
-      {completedTasks !== undefined && (completedTasks.length>0) && (
+      {completedTasks !== undefined && completedTasks.length > 0 && (
         <>
           <div className="task-bar">
             <div className="task-header">Completed tasks:</div>

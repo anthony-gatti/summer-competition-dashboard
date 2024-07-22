@@ -101,5 +101,36 @@
   flex-direction: column;
   align-items: start;
   justify-content: center;
-  gap:2rem;
+  gap:1.5rem;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+.task-popup-section {
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+.divider {
+    border:solid 0.5px;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    width: fill;
+}
+
+.task-button {
+    width: fill;
+    display: flex;
+    justify-content: center;   
+}
+
+.add {
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-weight: 800;
+    font-size: 1.1rem;
+    background-color: rgb(86, 151, 255);
+    height: 2rem;
+    width: 12rem;
 }
