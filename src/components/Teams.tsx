@@ -42,7 +42,7 @@ function Team1Button({
   ) => void;
 }) {
   let name = "TEAM " + number;
-  if(selected && person !== "") {
+  if (selected && person !== "") {
     name = person.toUpperCase() + "'S ";
   }
   return (
@@ -90,7 +90,7 @@ function Team2Button({
   ) => void;
 }) {
   let name = "TEAM " + number;
-  if(selected && person !== "") {
+  if (selected && person !== "") {
     name = person.toUpperCase() + "'S ";
   }
   return (
@@ -138,7 +138,7 @@ function Team3Button({
   ) => void;
 }) {
   let name = "TEAM " + number;
-  if(selected && person !== "") {
+  if (selected && person !== "") {
     name = person.toUpperCase() + "'S ";
   }
   return (
@@ -182,49 +182,31 @@ export default function Teams({
   const [team3Points, setTeam3Points] = useState<number>(0);
 
   useEffect(() => {
-    const fetchTasks = async () => {
+    const fetchPoints = async () => {
       try {
-        let data1;
-        if(person!=="" && team===1){
-          data1 = await getPersonPoints(person);
-        }else {
-          data1 = await getTeamPoints(1);
-        }
-        if(data1.total_points){
-          setTeam1Points(data1.total_points);
+        if (person !== "" && team === 1) {
+          const data = await getPersonPoints(person);
+          setTeam1Points(data.total_points || 0);
+        } else if (person !== "" && team === 2) {
+          const data = await getPersonPoints(person);
+          setTeam2Points(data.total_points || 0);
+        } else if (person !== "" && team === 3) {
+          const data = await getPersonPoints(person);
+          setTeam3Points(data.total_points || 0);
         } else {
-          setTeam1Points(0);
-        }
-
-        let data2;
-        if(person!=="" && team===2){
-          data2 = await getPersonPoints(person);
-        }else {
-          data2 = await getTeamPoints(2);
-        }
-        if(data2.total_points){
-          setTeam2Points(data2.total_points);
-        } else {
-          setTeam2Points(0);
-        }
-
-        let data3;
-        if(person!=="" && team===3){
-          data3 = await getPersonPoints(person);
-        }else {
-          data3 = await getTeamPoints(3);
-        }
-        if(data3.total_points){
-          setTeam3Points(data3.total_points);
-        } else {
-          setTeam3Points(0);
+          let points = await getTeamPoints(1);
+          setTeam1Points(points.total_points || 0);
+          points = await getTeamPoints(2);
+          setTeam2Points(points.total_points || 0);
+          points = await getTeamPoints(3);
+          setTeam3Points(points.total_points || 0);
         }
       } catch (error) {
         console.error("Failed to fetch team points:", error);
       }
     };
 
-    fetchTasks();
+    fetchPoints();
   }, [person, team]);
 
   const onTeamClick = (number: number) => {
