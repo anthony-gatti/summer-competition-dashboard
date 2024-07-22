@@ -42,8 +42,10 @@ function Team1Button({
   ) => void;
 }) {
   let name = "TEAM " + number;
+  let max = 9700;
   if (selected && person !== "") {
     name = person.toUpperCase() + "'S ";
+    max = 1940;
   }
   return (
     <div className={`team ${selected ? "selected" : ""}`} onClick={onTeamClick}>
@@ -52,7 +54,7 @@ function Team1Button({
           <div className="team-header">{name} POINTS</div>
           <div className="points">
             <div className="current">{points}</div>
-            <div className="max">/ 9700</div>
+            <div className="max">/ {max}</div>
           </div>
           <div className="members">
             {["Michael", "Kevin", "Bob", "Larissa", "Gabby"].map((name) => (
@@ -90,8 +92,10 @@ function Team2Button({
   ) => void;
 }) {
   let name = "TEAM " + number;
+  let max = 9700;
   if (selected && person !== "") {
     name = person.toUpperCase() + "'S ";
+    max = 1940
   }
   return (
     <div className={`team ${selected ? "selected" : ""}`} onClick={onTeamClick}>
@@ -100,7 +104,7 @@ function Team2Button({
           <div className="team-header">{name} POINTS</div>
           <div className="points">
             <div className="current">{points}</div>
-            <div className="max">/ 9700</div>
+            <div className="max">/ {max}</div>
           </div>
           <div className="members">
             {["Cecily", "Eric", "Clare", "Anthony", "Mike"].map((name) => (
@@ -138,8 +142,10 @@ function Team3Button({
   ) => void;
 }) {
   let name = "TEAM " + number;
+  let max = 9700;
   if (selected && person !== "") {
     name = person.toUpperCase() + "'S ";
+    max = 1940;
   }
   return (
     <div className={`team ${selected ? "selected" : ""}`} onClick={onTeamClick}>
@@ -148,7 +154,7 @@ function Team3Button({
           <div className="team-header">{name} POINTS</div>
           <div className="points">
             <div className="current">{points}</div>
-            <div className="max">/ 9700</div>
+            <div className="max">/ {max}</div>
           </div>
           <div className="members">
             {["Mary", "Grant", "Joe", "Alexander", "Addison"].map((name) => (
