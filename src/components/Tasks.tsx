@@ -44,7 +44,7 @@ function AddButton({ task }: { task: Task }) {
   );
 }
 
-function Modal({ task, onClose }: { task: Task; onClose: () => void }) {
+function Modal({ task, completed, onClose }: { task: Task; completed: boolean; onClose: () => void }) {
   return (
     <div className="task-overlay" onClick={onClose}>
       <div
@@ -64,7 +64,7 @@ function Modal({ task, onClose }: { task: Task; onClose: () => void }) {
           </div>
           {task.restrictions}
         </div>
-        <AddButton task={task} />
+        {!completed && <AddButton task={task} />}
       </div>
     </div>
   );
@@ -84,6 +84,7 @@ export default function Tasks({
   const [tasks, setTasks] = useState<Task[]>();
   const [completedTasks, setCompletedTasks] = useState<Task[]>();
   const [selectedTask, setSelectedTask] = useState<Task>();
+  const [isCompletedTask, setCompletedTask] = useState<boolean | undefined>();
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -108,12 +109,13 @@ export default function Tasks({
     fetchTasks();
   }, [person]);
 
-  const onClick = (task: Task) => {
+  const onClick = (task: Task, completed: boolean) => {
     if (task === selectedTask) {
       setSelectedTask(undefined);
     } else {
       setSelectedTask(task);
     }
+    setCompletedTask(completed);
   };
 
   const closeModal = () => {
@@ -134,11 +136,11 @@ export default function Tasks({
             description={task.description}
             restrictions={task.restrictions}
             selected={selectedTask === task}
-            onClick={() => onClick(task)}
+            onClick={() => onClick(task, false)}
           />
         ))}
-        {selectedTask !== undefined && (
-          <Modal task={selectedTask} onClose={closeModal} />
+        {selectedTask !== undefined  && isCompletedTask===false && (
+          <Modal task={selectedTask} completed={false} onClose={closeModal} />
         )}
       </div>
       {completedTasks !== undefined && completedTasks.length > 0 && (
@@ -154,11 +156,11 @@ export default function Tasks({
                 description={task.description}
                 restrictions={task.restrictions}
                 selected={selectedTask === task}
-                onClick={() => onClick(task)}
+                onClick={() => onClick(task, true)}
               />
             ))}
-            {selectedTask !== undefined && (
-              <Modal task={selectedTask} onClose={closeModal} />
+            {selectedTask !== undefined && isCompletedTask===true && (
+              <Modal task={selectedTask} completed={true} onClose={closeModal} />
             )}
           </div>
         </>
