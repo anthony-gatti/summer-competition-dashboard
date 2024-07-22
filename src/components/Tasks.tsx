@@ -194,7 +194,7 @@ function SubmissionForm({
         className="task-overlay-content"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="submission-form">
+        <form className="submission-form" onSubmit={handleSubmit}>
           <div className="form-field">
             <label htmlFor="name">Name*</label>
             <select
@@ -252,11 +252,11 @@ function SubmissionForm({
             />
           </div>
           <div className="submit-button">
-            <button className="add" onClick={handleSubmit}>
+            <button className="add" type="submit">
               Submit
             </button>
           </div>
-        </div>
+        </form>
       </div>
     </div>
   );
