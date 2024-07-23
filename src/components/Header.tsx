@@ -1,3 +1,4 @@
+import Countdown from './Countdown';
 import './Header.css';
 
 export default function Header() {
@@ -11,7 +12,7 @@ export default function Header() {
                     </svg>Summer Competition Scoreboard
                 </span>
             </div>
-            <div className='header-item2'>Count down/days/time remaining</div>
+            <Countdown targetDate="2024-08-02T17:30:00" />
             <div className='header-item3'>By team/By individual</div>
         </div>
     );
