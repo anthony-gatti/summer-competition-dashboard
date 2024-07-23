@@ -14,10 +14,13 @@
 }
 
 .search-bar {
-    border:solid 1px;
-    border-radius: 20px;
-    height: 2rem;
     width: 30%;
+    height: 2rem;
+    padding-left: 1rem;
+    background-color: transparent;
+    border: solid 1px;
+    border-radius: 20px;
+    font-size:1rem;
 }
 
 .task-list {

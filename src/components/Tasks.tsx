@@ -118,7 +118,7 @@ function SubmissionForm({
 
   const handleSubmit = async () => {
     try {
-      if(selectedPerson !== undefined && selectedTask !== undefined) {
+      if (selectedPerson !== undefined && selectedTask !== undefined) {
         const data = await postCompletion(
           selectedPerson,
           selectedTask,
@@ -169,7 +169,7 @@ function SubmissionForm({
               selectedPerson.name === "Team 2" ||
               selectedPerson.name === "Team 3")
           ) {
-            console.log("SELECTED PERSON: ", selectedPerson)
+            console.log("SELECTED PERSON: ", selectedPerson);
             const data = await getTasksForTeam(selectedPerson, "available");
             setAvailableTasks(data);
           } else {
@@ -283,6 +283,7 @@ export default function Tasks({
   const [submissionForm, setSubmissionForm] = useState<boolean | undefined>(
     false
   );
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -333,14 +334,28 @@ export default function Tasks({
     setSubmissionForm(false);
   };
 
+  const filteredTasks = tasks?.filter((task) =>
+    task.description.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const filteredCompletedTasks = completedTasks?.filter((task) =>
+    task.description.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <>
       <div className="task-bar">
         <div className="task-header">Available tasks:</div>
-        <div className="search-bar">Search</div>
+        <input
+          className="search-bar"
+          type="text"
+          placeholder="Search"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
       </div>
       <div className="task-list">
-        {tasks?.map((task: Task) => (
+        {filteredTasks?.map((task: Task) => (
           <TaskButton
             number={task.task_id}
             name={task.task_name}
@@ -374,7 +389,7 @@ export default function Tasks({
             <div className="task-header">Completed tasks:</div>
           </div>
           <div className="task-list">
-            {completedTasks?.map((task: Task) => (
+            {filteredCompletedTasks?.map((task: Task) => (
               <TaskButton
                 number={task.task_id}
                 name={task.task_name}
