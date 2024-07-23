@@ -44,7 +44,7 @@ const Countdown: React.FC<CountdownProps> = ({ targetDate }) => {
     timerComponents.push(
       <span key={interval}>
         {(timeLeft as any)[interval]} {interval}
-        {index < array.length - 1 ? "/" : ""}
+        {index < array.length - 1 ? "/" : " remaining"}
       </span>
     );
   });

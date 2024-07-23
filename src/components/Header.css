@@ -18,7 +18,7 @@
     text-shadow: 1px 0 #000000;
     letter-spacing:1px;
     font-weight:bold;
-    width: 33%;
+    width: 50%;
     justify-content: start;
     align-items: center;
 }
@@ -30,19 +30,7 @@
     text-shadow: 1px 0 #000000;
     letter-spacing:1px;
     font-weight:bold;
-    width: 33%;
-    justify-content: center;
-    align-items: center;
-}
-
-.header-item3 {
-    display: flex;
-    font-size: 0.9rem;
-    color:#000000;    
-    text-shadow: 1px 0 #000000;
-    letter-spacing:1px;
-    font-weight:bold;
-    width: 33%;
+    width: 50%;
     justify-content: end;
     align-items: center;
 }

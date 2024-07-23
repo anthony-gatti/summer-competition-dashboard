@@ -13,7 +13,6 @@ export default function Header() {
                 </span>
             </div>
             <Countdown targetDate="2024-08-02T17:30:00" />
-            <div className='header-item3'>By team/By individual</div>
         </div>
     );
 }
