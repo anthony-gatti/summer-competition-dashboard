@@ -10,6 +10,7 @@ import "./Tasks.css";
 
 function TaskButton({
   description,
+  team,
   selected,
   onClick,
 }: {
@@ -17,6 +18,7 @@ function TaskButton({
   name: string;
   description: string;
   restrictions: string;
+  team: boolean;
   selected: boolean;
   onClick: () => void;
 }) {
@@ -25,6 +27,7 @@ function TaskButton({
       <div className="task-container">
         <div className="task-content">
           <div className="task-description">{description}</div>
+          {team && <div className="team-identifier">T</div>}
           <div className="info-button">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
               <title>task-info</title>
@@ -342,6 +345,7 @@ export default function Tasks({
             name={task.task_name}
             description={task.description}
             restrictions={task.restrictions}
+            team={task.team}
             selected={selectedTask === task}
             onClick={() => onClick(task, false)}
           />
@@ -375,6 +379,7 @@ export default function Tasks({
                 name={task.task_name}
                 description={task.description}
                 restrictions={task.restrictions}
+                team={task.team}
                 selected={selectedTask === task}
                 onClick={() => onClick(task, true)}
               />
