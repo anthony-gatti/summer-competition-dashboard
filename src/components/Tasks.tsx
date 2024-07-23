@@ -256,7 +256,7 @@ function SubmissionForm({
           </div>
           <div className="submit-button">
             <button className="add" type="submit">
-              <input type="submit" value="Submit" />
+              Submit
             </button>
           </div>
         </form>
