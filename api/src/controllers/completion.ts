@@ -20,7 +20,7 @@ class CompletionController {
     @Route('post', '/')
     async create(req: Request, res: Response, next: NextFunction) {
         try {
-            const { person_id, task_id, comment, link } = req.body;
+            const { person_id, task_id, comment, link } = req.body.params;
             const newCompletion = await db.insert(completion).values({ person_id: person_id, task_id: task_id, comment: comment, link: link });
             return res.status(201).json(newCompletion);
         } catch (error) {

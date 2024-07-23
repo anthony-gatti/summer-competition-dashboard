@@ -7,8 +7,8 @@ export const postCompletion = async (person: Person, task: Task, comment: string
   try {
     const response = await axios.post(API_URL, {
       params: {
-        person: person.person_id,
-        task: task.task_id,
+        person_id: person.person_id,
+        task_id: task.task_id,
         comment: comment,
         link: link
       }
