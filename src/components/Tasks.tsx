@@ -105,8 +105,8 @@ function SubmissionForm({
   selectedTask: string;
   onClose: () => void;
 }) {
-  const [people, setPeople] = useState<string[]>();
-  const [availableTasks, setAvailableTasks] = useState<string[]>();
+  const [people, setPeople] = useState<Person[]>();
+  const [availableTasks, setAvailableTasks] = useState<Task[]>();
   const [name, setName] = useState<string>(person);
   const [task, setTask] = useState<string>(selectedTask);
   const [comment, setComment] = useState<string>("");
@@ -127,8 +127,7 @@ function SubmissionForm({
     const fetchPeople = async () => {
       try {
         const data = await getPeople();
-        const names = data.map((person: { name: string }) => person.name);
-        setPeople(names);
+        setPeople(data);
       } catch (error) {
         console.error("Failed to fetch people:", error);
       }
@@ -147,10 +146,7 @@ function SubmissionForm({
       ) {
         try {
           const data = await getTasksForPerson(name, "available");
-          const taskNames = data.map(
-            (task: { task_name: string }) => task.task_name
-          );
-          setAvailableTasks(taskNames);
+          setAvailableTasks(data);
         } catch (error) {
           console.error("Failed to fetch tasks:", error);
         }
@@ -158,10 +154,7 @@ function SubmissionForm({
         try {
           if (team !== 0) {
             const data = await getTasksForTeam(team, "available");
-            const taskNames = data.map(
-              (task: { task_name: string }) => task.task_name
-            );
-            setAvailableTasks(taskNames);
+            setAvailableTasks(data);
           } else if (
             name === "Team 1" ||
             name === "Team 2" ||
@@ -171,16 +164,10 @@ function SubmissionForm({
               Number(name.charAt(name.length - 1)),
               "available"
             );
-            const taskNames = data.map(
-              (task: { task_name: string }) => task.task_name
-            );
-            setAvailableTasks(taskNames);
+            setAvailableTasks(data);
           } else {
             const data = await getTasks();
-            const taskNames = data.map(
-              (task: { task_name: string }) => task.task_name
-            );
-            setAvailableTasks(taskNames);
+            setAvailableTasks(data);
           }
         } catch (error) {
           console.error("Failed to fetch tasks:", error);
@@ -210,8 +197,8 @@ function SubmissionForm({
                 Select a person
               </option>
               {people?.map((person, index) => (
-                <option key={index} value={person}>
-                  {person}
+                <option key={index} value={person.name}>
+                  {person.name}
                 </option>
               ))}
             </select>
@@ -228,8 +215,8 @@ function SubmissionForm({
                 Select a task
               </option>
               {availableTasks?.map((task, index) => (
-                <option key={index} value={task}>
-                  {task}
+                <option key={index} value={task.task_name}>
+                  {task.task_name}
                 </option>
               ))}
             </select>
