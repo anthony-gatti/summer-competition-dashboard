@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { getTeamPoints } from "../services/teamService";
-import { getPersonPoints } from "../services/personService";
+import { getPersonByName, getPersonPoints } from "../services/personService";
 import "./Teams.css";
+import { Person } from "../types";
 
 function PersonButton({
   name,
@@ -33,7 +34,7 @@ function Team1Button({
   number: number;
   selected: boolean;
   points: number;
-  person: string;
+  person: Person | undefined;
   onTeamClick: () => void;
   onPersonClick: (
     name: string,
@@ -43,8 +44,8 @@ function Team1Button({
 }) {
   let name = "TEAM " + number;
   let max = 9700;
-  if (selected && person !== "") {
-    name = person.toUpperCase() + "'S ";
+  if (selected && person !== undefined) {
+    name = person.name.toUpperCase() + "'S ";
     max = 1940;
   }
   return (
@@ -61,7 +62,7 @@ function Team1Button({
               <PersonButton
                 key={name}
                 name={name}
-                selected={person === name}
+                selected={person !== undefined && person.name === name}
                 onClick={(e) => onPersonClick(name, number, e)}
               />
             ))}
@@ -83,7 +84,7 @@ function Team2Button({
   number: number;
   selected: boolean;
   points: number;
-  person: string;
+  person: Person | undefined;
   onTeamClick: () => void;
   onPersonClick: (
     name: string,
@@ -93,8 +94,8 @@ function Team2Button({
 }) {
   let name = "TEAM " + number;
   let max = 9700;
-  if (selected && person !== "") {
-    name = person.toUpperCase() + "'S ";
+  if (selected && person !== undefined) {
+    name = person.name.toUpperCase() + "'S ";
     max = 1940
   }
   return (
@@ -111,7 +112,7 @@ function Team2Button({
               <PersonButton
                 key={name}
                 name={name}
-                selected={person === name}
+                selected={person !== undefined && person.name === name}
                 onClick={(e) => onPersonClick(name, number, e)}
               />
             ))}
@@ -133,7 +134,7 @@ function Team3Button({
   number: number;
   selected: boolean;
   points: number;
-  person: string;
+  person: Person | undefined;
   onTeamClick: () => void;
   onPersonClick: (
     name: string,
@@ -143,8 +144,8 @@ function Team3Button({
 }) {
   let name = "TEAM " + number;
   let max = 9700;
-  if (selected && person !== "") {
-    name = person.toUpperCase() + "'S ";
+  if (selected && person !== undefined) {
+    name = person.name.toUpperCase() + "'S ";
     max = 1940;
   }
   return (
@@ -161,7 +162,7 @@ function Team3Button({
               <PersonButton
                 key={name}
                 name={name}
-                selected={person === name}
+                selected={person !== undefined && person.name === name}
                 onClick={(e) => onPersonClick(name, number, e)}
               />
             ))}
@@ -180,8 +181,8 @@ export default function Teams({
 }: {
   team: number | null;
   setTeam: React.Dispatch<React.SetStateAction<number | null>>;
-  person: string;
-  setPerson: React.Dispatch<React.SetStateAction<string>>;
+  person: Person | undefined;
+  setPerson: React.Dispatch<React.SetStateAction<Person | undefined>>;
 }) {
   const [team1Points, setTeam1Points] = useState<number>(0);
   const [team2Points, setTeam2Points] = useState<number>(0);
@@ -190,13 +191,13 @@ export default function Teams({
   useEffect(() => {
     const fetchPoints = async () => {
       try {
-        if (person !== "" && team === 1) {
+        if (person !== undefined && team === 1) {
           const data = await getPersonPoints(person);
           setTeam1Points(data.total_points || 0);
-        } else if (person !== "" && team === 2) {
+        } else if (person !== undefined && team === 2) {
           const data = await getPersonPoints(person);
           setTeam2Points(data.total_points || 0);
-        } else if (person !== "" && team === 3) {
+        } else if (person !== undefined && team === 3) {
           const data = await getPersonPoints(person);
           setTeam3Points(data.total_points || 0);
         } else {
@@ -218,25 +219,26 @@ export default function Teams({
   const onTeamClick = (number: number) => {
     if (team === number) {
       setTeam(null);
-      setPerson("");
+      setPerson(undefined);
     } else {
       setTeam(number);
-      setPerson("");
+      setPerson(undefined);
     }
   };
 
-  const onPersonClick = (
+  const onPersonClick = async (
     name: string,
     team: number,
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
     e.stopPropagation();
-    if (person === name) {
-      setPerson("");
+    if (person !== undefined && person.name === name) {
+      setPerson(undefined);
       setTeam(null);
     } else {
       setTeam(team);
-      setPerson(name);
+      const person_obj = await getPersonByName(name);
+      setPerson(person_obj);
     }
   };
 
@@ -246,7 +248,7 @@ export default function Teams({
         number={1}
         selected={team === 1 || team === null}
         points={team1Points}
-        person={team === 1 ? person : ""}
+        person={team === 1 ? person : undefined}
         onTeamClick={() => onTeamClick(1)}
         onPersonClick={onPersonClick}
       />
@@ -254,7 +256,7 @@ export default function Teams({
         number={2}
         selected={team === 2 || team === null}
         points={team2Points}
-        person={team === 2 ? person : ""}
+        person={team === 2 ? person : undefined}
         onTeamClick={() => onTeamClick(2)}
         onPersonClick={onPersonClick}
       />
@@ -262,7 +264,7 @@ export default function Teams({
         number={3}
         selected={team === 3 || team === null}
         points={team3Points}
-        person={team === 3 ? person : ""}
+        person={team === 3 ? person : undefined}
         onTeamClick={() => onTeamClick(3)}
         onPersonClick={onPersonClick}
       />

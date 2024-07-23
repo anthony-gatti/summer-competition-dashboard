@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { getPeople } from "../services/personService";
+import { getPeople, getPersonByName } from "../services/personService";
 import {
+  getTaskByName,
   getTasks,
   getTasksForPerson,
   getTasksForTeam,
 } from "../services/taskService";
 import { Task, Person } from "../types";
 import "./Tasks.css";
+import { postCompletion } from "../services/completionService";
 
 function TaskButton({
   description,
@@ -97,29 +99,38 @@ function TaskInfo({
 function SubmissionForm({
   person,
   team,
-  selectedTask,
+  task,
   onClose,
 }: {
-  person: string;
+  person: Person | undefined;
   team: number;
-  selectedTask: string;
+  task: Task | undefined;
   onClose: () => void;
 }) {
   const [people, setPeople] = useState<Person[]>();
   const [availableTasks, setAvailableTasks] = useState<Task[]>();
-  const [name, setName] = useState<string>(person);
-  const [task, setTask] = useState<string>(selectedTask);
+  const [selectedPerson, setSelectedPerson] = useState<Person | undefined>(
+    person
+  );
+  const [selectedTask, setSelectedTask] = useState<Task | undefined>(task);
   const [comment, setComment] = useState<string>("");
   const [link, setLink] = useState<string>("");
 
-  const handleSubmit = () => {
-    // Handle the submission logic here
-    console.log({
-      name,
-      task,
-      comment,
-      link,
-    });
+  const handleSubmit = async () => {
+    try {
+      if(selectedPerson !== undefined && selectedTask !== undefined) {
+        const data = await postCompletion(
+          selectedPerson,
+          selectedTask,
+          comment,
+          link
+        );
+      } else {
+        console.error("Filed to add completion");
+      }
+    } catch (error) {
+      console.error("Failed to add completion: ", error);
+    }
     onClose();
   };
 
@@ -139,31 +150,26 @@ function SubmissionForm({
   useEffect(() => {
     const fetchTasks = async () => {
       if (
-        name !== "" &&
-        name !== "Team 1" &&
-        name !== "Team 2" &&
-        name !== "Team 3"
+        selectedPerson !== undefined &&
+        selectedPerson.name !== "Team 1" &&
+        selectedPerson.name !== "Team 2" &&
+        selectedPerson.name !== "Team 3"
       ) {
         try {
-          const data = await getTasksForPerson(name, "available");
+          const data = await getTasksForPerson(selectedPerson, "available");
           setAvailableTasks(data);
         } catch (error) {
           console.error("Failed to fetch tasks:", error);
         }
       } else {
         try {
-          if (team !== 0) {
-            const data = await getTasksForTeam(team, "available");
-            setAvailableTasks(data);
-          } else if (
-            name === "Team 1" ||
-            name === "Team 2" ||
-            name === "Team 3"
+          if (
+            selectedPerson !== undefined &&
+            (selectedPerson.name === "Team 1" ||
+              selectedPerson.name === "Team 2" ||
+              selectedPerson.name === "Team 3")
           ) {
-            const data = await getTasksForTeam(
-              Number(name.charAt(name.length - 1)),
-              "available"
-            );
+            const data = await getTasksForTeam(selectedPerson, "available");
             setAvailableTasks(data);
           } else {
             const data = await getTasks();
@@ -176,7 +182,7 @@ function SubmissionForm({
     };
 
     fetchTasks();
-  }, [name, team]);
+  }, [selectedPerson, team]);
 
   return (
     <div className="task-overlay" onClick={onClose}>
@@ -190,8 +196,11 @@ function SubmissionForm({
             <select
               id="name"
               required
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              value={selectedPerson?.name}
+              onChange={async (e) => {
+                const data = await getPersonByName(e.target.value);
+                setSelectedPerson(data);
+              }}
             >
               <option value="" disabled>
                 Select a person
@@ -208,8 +217,11 @@ function SubmissionForm({
             <select
               id="task"
               required
-              value={task}
-              onChange={(e) => setTask(e.target.value)}
+              value={selectedTask?.task_name}
+              onChange={async (e) => {
+                const data = await getTaskByName(e.target.value);
+                setSelectedTask(data);
+              }}
             >
               <option value="" disabled>
                 Select a task
@@ -260,8 +272,8 @@ export default function Tasks({
 }: {
   team: number | null;
   setTeam: React.Dispatch<React.SetStateAction<number | null>>;
-  person: string;
-  setPerson: React.Dispatch<React.SetStateAction<string>>;
+  person: Person | undefined;
+  setPerson: React.Dispatch<React.SetStateAction<Person | undefined>>;
 }) {
   const [tasks, setTasks] = useState<Task[]>();
   const [completedTasks, setCompletedTasks] = useState<Task[]>();
@@ -274,17 +286,19 @@ export default function Tasks({
   useEffect(() => {
     const fetchTasks = async () => {
       try {
-        if (person === "") {
+        if (person === undefined) {
           if (team === null) {
             const data = await getTasks();
             console.log(data);
             setTasks(data);
             setCompletedTasks(undefined);
           } else {
-            const data = await getTasksForTeam(team, "available");
+            const team_name = "Team " + team;
+            const team_obj = await getPersonByName(team_name);
+            const data = await getTasksForTeam(team_obj, "available");
             console.log("AVAILABLE TEAM TASKS: ", data);
             setTasks(data);
-            const compData = await getTasksForTeam(team, "completed");
+            const compData = await getTasksForTeam(team_obj, "completed");
             console.log("COMPLETED TEAM TASKS: ", compData);
             setCompletedTasks(compData);
           }
@@ -349,7 +363,7 @@ export default function Tasks({
           <SubmissionForm
             person={person}
             team={team || 0}
-            selectedTask={selectedTask?.task_name || ""}
+            task={selectedTask}
             onClose={closeSubmissionForm}
           />
         )}

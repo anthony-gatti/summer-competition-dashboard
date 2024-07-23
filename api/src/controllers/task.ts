@@ -21,23 +21,30 @@ class TaskController {
         }
     }
 
+    @Route('get', '/:task_name')
+    async getTaskByName(req: Request, res: Response, next: NextFunction) {
+        try {
+            const taskRow = await db
+                .select({ task_id: task.task_id, task_name: task.task_name })
+                .from(task)
+                .where(eq(task.task_name, req.query.name as string))
+                .limit(1)
+                .execute();
+
+            if (!taskRow) {
+                throw new Error(`Task with name ${req.body.name} not found.`);
+            }
+            return res.status(200).json(taskRow[0]);
+        } catch (error) {
+            console.error('Error fetching task:', error);
+            return res.status(500).json({ error: 'Failed to fetch task' });
+        }
+    }
+
     @Route('get', '/person/:name')
     async getPersonTasks(req: Request, res: Response, next: NextFunction) {
         if (req.query.status === 'available') {
             try {
-                const personRow = await db
-                    .select({ person_id: person.person_id })
-                    .from(person)
-                    .where(eq(person.name, req.query.name as string))
-                    .limit(1)
-                    .execute();
-
-                if (!personRow) {
-                    throw new Error(`Person with name ${req.body.name} not found.`);
-                }
-
-                const personId = personRow[0].person_id;
-
                 // Get the tasks where the number of completions is less than the number of repetitions allowed
                 const tasks = await db
                     .select({
@@ -51,7 +58,7 @@ class TaskController {
                         completion_count: count(completion.completion_id)
                     })
                     .from(task)
-                    .leftJoin(completion, and(eq(task.task_id, completion.task_id), eq(completion.person_id, personId)))
+                    .leftJoin(completion, and(eq(task.task_id, completion.task_id), eq(completion.person_id, Number(req.query.person_id))))
                     .groupBy(task.task_id)
                     .where(eq(task.team, false))
                     .having(lt(count(completion.completion_id), task.repititions))
@@ -106,19 +113,6 @@ class TaskController {
     async getTeamTasks(req: Request, res: Response, next: NextFunction) {
         if (req.query.status === 'available') {
             try {
-                const personRow = await db
-                    .select({ person_id: person.person_id })
-                    .from(person)
-                    .where(like(person.name, `%${req.query.name as string}%`))
-                    .limit(1)
-                    .execute();
-
-                if (!personRow) {
-                    throw new Error(`Person with name ${req.body.name} not found.`);
-                }
-
-                const personId = personRow[0].person_id;
-
                 // Get the tasks where the number of completions is less than the number of repetitions allowed
                 const tasks = await db
                     .select({
@@ -132,7 +126,7 @@ class TaskController {
                         completion_count: count(completion.completion_id)
                     })
                     .from(task)
-                    .leftJoin(completion, and(eq(task.task_id, completion.task_id), eq(completion.person_id, personId)))
+                    .leftJoin(completion, and(eq(task.task_id, completion.task_id), eq(completion.person_id, Number(req.query.person_id))))
                     .groupBy(task.task_id)
                     .where(eq(task.team, true))
                     .having(lt(count(completion.completion_id), task.repititions))
