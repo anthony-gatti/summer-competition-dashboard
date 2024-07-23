@@ -25,7 +25,7 @@ class PersonController {
     async getPersonByName(req: Request, res: Response, next: NextFunction) {
         try {
             const personRow = await db
-                .select({ person_id: person.person_id, person_name: person.name })
+                .select({ person_id: person.person_id, name: person.name })
                 .from(person)
                 .where(eq(person.name, req.query.name as string))
                 .limit(1)

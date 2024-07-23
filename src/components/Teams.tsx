@@ -232,12 +232,12 @@ export default function Teams({
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
     e.stopPropagation();
-    if (person !== undefined && person.name === name) {
+    const person_obj = await getPersonByName(name);
+    if (person !== undefined && person.name === person_obj.name) {
       setPerson(undefined);
       setTeam(null);
     } else {
       setTeam(team);
-      const person_obj = await getPersonByName(name);
       setPerson(person_obj);
     }
   };

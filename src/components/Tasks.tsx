@@ -169,6 +169,7 @@ function SubmissionForm({
               selectedPerson.name === "Team 2" ||
               selectedPerson.name === "Team 3")
           ) {
+            console.log("SELECTED PERSON: ", selectedPerson)
             const data = await getTasksForTeam(selectedPerson, "available");
             setAvailableTasks(data);
           } else {
@@ -255,7 +256,7 @@ function SubmissionForm({
           </div>
           <div className="submit-button">
             <button className="add" type="submit">
-              Submit
+              <input type="submit" value="Submit" />
             </button>
           </div>
         </form>
@@ -296,10 +297,9 @@ export default function Tasks({
             const team_name = "Team " + team;
             const team_obj = await getPersonByName(team_name);
             const data = await getTasksForTeam(team_obj, "available");
-            console.log("AVAILABLE TEAM TASKS: ", data);
             setTasks(data);
+
             const compData = await getTasksForTeam(team_obj, "completed");
-            console.log("COMPLETED TEAM TASKS: ", compData);
             setCompletedTasks(compData);
           }
         } else {
