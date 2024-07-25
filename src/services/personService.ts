@@ -3,12 +3,21 @@ import { Person } from '../types';
 
 const API_URL = 'http://localhost:1337/person';
 
-export const getPeople = async () => { // NEEDS TO BE FIXED
+export const getPeople = async () => {
   try {
-    const response = await axios.get(`${API_URL}/`);
-    return response.data;
+    const response = await fetch(`${API_URL}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+    });
+
+    const data = await response.json();
+    console.log(data);
+
+    return data;
   } catch (error) {
-    console.error('Error fetching points:', error);
+    console.error('Error fetching people:', error);
     throw error;
   }
 };
