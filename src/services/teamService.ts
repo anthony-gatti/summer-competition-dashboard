@@ -13,21 +13,22 @@ function isFullPageObjectResponse(
 
 export const getTeamPoints = async (number: number) => {
   try {
-    console.log("CALL MADE HERE");
-    const response = await notion.databases.query({
-      database_id: 'c84b190cdbaf4e2a8683a9229e51696a?v=6ed5745825a641ed9b09007d8756ab2e',
-      filter: {
-        property: 'Name',
-        title: {
-          equals: 'Team ' + number,
-        },
+    console.log("Found the call!");
+    const response = await fetch('http://localhost:5001/getTotalPointsForTeam', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
       },
+      body: JSON.stringify({ number })
     });
-    console.log("RESPONSE: ", response);
 
-    
+    const data = await response.json();
+    console.log(`Total points for team ${number}:`, data.totalPoints);
+    console.log('Reprint of total points: ', data.totalPoints);
+
+
     const points = {total_points: number}
-    points.total_points = 0;
+    points.total_points = parseInt(data.totalPoints);
 
     return points;
   } catch (error) {

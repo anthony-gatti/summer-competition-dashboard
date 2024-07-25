@@ -202,6 +202,7 @@ export default function Teams({
           setTeam3Points(data.total_points || 0);
         } else {
           let points = await getTeamPoints(1);
+          console.log(points);
           setTeam1Points(points.total_points || 0);
           points = await getTeamPoints(2);
           setTeam2Points(points.total_points || 0);
