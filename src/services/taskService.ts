@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Person } from '../types';
+import { Person, Task } from '../types';
 
 const API_URL = 'http://localhost:5001/task';
 
@@ -50,9 +50,34 @@ export const getTasksForPerson = async (person: Person, status: string) => { // 
       body: JSON.stringify({ person, status })
     });
 
-    const data = await response.json();
+    const completions = await response.json();
+    const tasks = await getTasks();
 
-    return data;
+    tasks.forEach((task: Task) => {
+      completions.forEach((comp: string) => {
+        if(task.task_id === comp) {
+          task.repititions--;
+        }
+      })
+    })
+
+    const available_array: Task[] = [];
+    const complete_array: Task[] = [];
+
+    tasks.forEach((task: Task) => {
+      if(task.repititions > 0){
+        available_array.push(task);
+      } else {
+        complete_array.push(task);
+      }
+    })
+
+    if(status === 'available'){
+      return available_array;
+    } else {
+      return complete_array;
+    }
+
   } catch (error) {
     console.error('Error fetching tasks:', error);
     throw error;

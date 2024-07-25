@@ -1,5 +1,5 @@
 export interface Task {
-    task_id: number;
+    task_id: string;
     task_name: string;
     description: string;
     points: number;

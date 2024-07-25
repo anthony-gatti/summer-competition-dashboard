@@ -16,7 +16,7 @@ function TaskButton({
   selected,
   onClick,
 }: {
-  number: number;
+  task_id: string;
   name: string;
   description: string;
   restrictions: string;
@@ -359,7 +359,7 @@ export default function Tasks({
       <div className="task-list">
         {filteredTasks?.map((task: Task) => (
           <TaskButton
-            number={task.task_id}
+            task_id={task.task_id}
             name={task.task_name}
             description={task.description}
             restrictions={task.restrictions}
@@ -393,7 +393,7 @@ export default function Tasks({
           <div className="task-list">
             {filteredCompletedTasks?.map((task: Task) => (
               <TaskButton
-                number={task.task_id}
+                task_id={task.task_id}
                 name={task.task_name}
                 description={task.description}
                 restrictions={task.restrictions}
