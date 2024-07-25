@@ -31,7 +31,7 @@ export const getPersonByName = async (name: string) => { // NEEDS TO BE FIXED
       },
       body: JSON.stringify({ name })
     });
-
+    
     const data = await response.json();
 
     return data[0];
