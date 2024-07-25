@@ -30,13 +30,13 @@ app.post('/team/points', async (req, res) => {
       }
     }, {
       headers: {
-        'Authorization': 'secret_fbrN9wJ2EnLQkLv7K9u74Sn2jYlyRsmT7EoZfhpSpem',
+        'Authorization': `${process.env.NOTION_KEY}`,
         'Content-Type': 'application/json',
         'Notion-Version': '2022-06-28'
       }
     });
 
-    // console.log(`Received response from Notion API: ${JSON.stringify(response.data)}\n`);
+    console.log(`Received response from Notion API: ${JSON.stringify(response.data)}\n`);
 
     let totalPoints = 0;
 
