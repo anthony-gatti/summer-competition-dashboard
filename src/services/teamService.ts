@@ -1,15 +1,4 @@
-import axios from 'axios';
-import { Client } from '@notionhq/client';
-import { PageObjectResponse, PartialPageObjectResponse } from '@notionhq/client/build/src/api-endpoints';
-const notion = new Client({ auth: 'secret_fbrN9wJ2EnLQkLv7K9u74Sn2jYlyRsmT7EoZfhpSpem' });
-
 const API_URL = 'http://localhost:5001/team';
-
-function isFullPageObjectResponse(
-  page: PageObjectResponse | PartialPageObjectResponse
-): page is PageObjectResponse {
-  return 'properties' in page;
-}
 
 export const getTeamPoints = async (number: number) => {
   try {
@@ -24,7 +13,6 @@ export const getTeamPoints = async (number: number) => {
 
     const data = await response.json();
     console.log(`Total points for team ${number}:`, data.totalPoints);
-    console.log('Reprint of total points: ', data.totalPoints);
 
 
     const points = {total_points: number}

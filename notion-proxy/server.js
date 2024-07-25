@@ -36,17 +36,15 @@ app.post('/team/points', async (req, res) => {
       }
     });
 
-    console.log(`Received response from Notion API: ${JSON.stringify(response.data)}\n`);
+    // console.log(`Received response from Notion API: ${JSON.stringify(response.data)}\n`);
 
     let totalPoints = 0;
 
     response.data.results.forEach(page => {
       const points = page.properties.total_points.number;
-      
       totalPoints += points;
     });
 
-    console.log(`Total points for team ${teamNumber}: ${totalPoints}`);
 
     res.json({ totalPoints });
   } catch (error) {
