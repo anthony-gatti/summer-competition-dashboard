@@ -221,7 +221,7 @@ function SubmissionForm({
               value={selectedTask?.task_name}
               onChange={async (e) => {
                 const data = await getTaskByName(e.target.value);
-                setSelectedTask(data);
+                setSelectedTask(data[0]);
               }}
             >
               <option value="" disabled>
