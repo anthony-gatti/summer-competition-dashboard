@@ -15,7 +15,7 @@ app.use(cors({
 
 app.use(express.json());
 
-app.post('/getTotalPointsForTeam', async (req, res) => {
+app.post('/team/points', async (req, res) => {
   const teamNumber = req.body.number;
 
   try {
@@ -51,24 +51,7 @@ app.post('/getTotalPointsForTeam', async (req, res) => {
     res.json({ totalPoints });
   } catch (error) {
     console.error('Error occurred while fetching data from Notion API:', error.message);
-    if (error.response) {
-      console.error('Response data:', error.response.data);
-      console.error('Response status:', error.response.status);
-      console.error('Response headers:', error.response.headers);
-      res.status(error.response.status).json({ error: error.response.data });
-    } else if (error.request) {
-      console.error('Request made but no response received:', error.request);
-      res.status(500).json({ error: 'No response from Notion API' });
-    } else {
-      console.error('Error in setting up request:', error.message);
-      res.status(500).json({ error: 'Error in setting up request' });
-    }
   }
-});
-
-// Debug route to test CORS
-app.get('/test-cors', (req, res) => {
-  res.send('CORS is working');
 });
 
 app.listen(port, () => {

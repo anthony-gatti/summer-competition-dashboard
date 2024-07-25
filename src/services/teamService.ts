@@ -3,7 +3,7 @@ import { Client } from '@notionhq/client';
 import { PageObjectResponse, PartialPageObjectResponse } from '@notionhq/client/build/src/api-endpoints';
 const notion = new Client({ auth: 'secret_fbrN9wJ2EnLQkLv7K9u74Sn2jYlyRsmT7EoZfhpSpem' });
 
-const API_URL = 'http://localhost:1337/team';
+const API_URL = 'http://localhost:5001/team';
 
 function isFullPageObjectResponse(
   page: PageObjectResponse | PartialPageObjectResponse
@@ -14,7 +14,7 @@ function isFullPageObjectResponse(
 export const getTeamPoints = async (number: number) => {
   try {
     console.log("Found the call!");
-    const response = await fetch('http://localhost:5001/getTotalPointsForTeam', {
+    const response = await fetch(`${API_URL}/points`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
