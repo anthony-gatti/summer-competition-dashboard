@@ -24,14 +24,19 @@ export const getPeople = async () => {
 
 export const getPersonByName = async (name: string) => { // NEEDS TO BE FIXED
   try {
-    const response = await axios.get(`${API_URL}/${name}`, {
-      params: {
-        name: name
-      }
+    const response = await fetch(`${API_URL}/${name}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ name })
     });
-    return response.data;
+
+    const data = await response.json();
+
+    return data;
   } catch (error) {
-    console.error('Error fetching person:', error);
+    console.error('Error fetching tasks:', error);
     throw error;
   }
 }

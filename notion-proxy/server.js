@@ -213,7 +213,7 @@ app.post("/person", async (req, res) => {
       }
       person_array.push(person);
     });
-    console.log(person_array);
+
     res.json(person_array);
   } catch (error) {
     console.error(
