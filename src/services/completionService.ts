@@ -3,7 +3,7 @@ import { Person, Task } from '../types';
 
 const API_URL = 'http://localhost:1337/completion';
 
-export const postCompletion = async (person: Person, task: Task, comment: string, link: string) => {
+export const postCompletion = async (person: Person, task: Task, comment: string, link: string) => { // NEEDS TO BE FIXED
   try {
     const response = await axios.post(API_URL, {
       params: {

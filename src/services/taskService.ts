@@ -41,7 +41,7 @@ export const getTaskByName = async (name: string) => {
   }
 }
 
-export const getTasksForPerson = async (person: Person, status: string) => {
+export const getTasksForPerson = async (person: Person, status: string) => { // NEEDS TO BE FIXED
   try {
     const response = await axios.get(`${API_URL}/person/${person.person_id}`, {
       params: {
@@ -56,7 +56,7 @@ export const getTasksForPerson = async (person: Person, status: string) => {
   }
 };
 
-export const getTasksForTeam = async (person: Person, status: string) => {
+export const getTasksForTeam = async (person: Person, status: string) => { // NEEDS TO BE FIXED
   try {
     const response = await axios.get(`${API_URL}/team/${person.person_id}`, {
       params: {

@@ -3,7 +3,7 @@ import { Person } from '../types';
 
 const API_URL = 'http://localhost:1337/person';
 
-export const getPeople = async () => {
+export const getPeople = async () => { // NEEDS TO BE FIXED
   try {
     const response = await axios.get(`${API_URL}/`);
     return response.data;
@@ -13,7 +13,7 @@ export const getPeople = async () => {
   }
 };
 
-export const getPersonByName = async (name: string) => {
+export const getPersonByName = async (name: string) => { // NEEDS TO BE FIXED
   try {
     const response = await axios.get(`${API_URL}/${name}`, {
       params: {
@@ -27,7 +27,7 @@ export const getPersonByName = async (name: string) => {
   }
 }
 
-export const getPersonPoints = async (person: Person) => {
+export const getPersonPoints = async (person: Person) => { // NEEDS TO BE FIXED
   try {
     const response = await axios.get(`${API_URL}/${person}/points`, {
       params: {
