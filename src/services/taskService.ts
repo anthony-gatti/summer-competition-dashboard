@@ -1,12 +1,21 @@
 import axios from 'axios';
 import { Person } from '../types';
 
-const API_URL = 'http://localhost:1337/task';
+const API_URL = 'http://localhost:5001/task';
 
 export const getTasks = async () => {
   try {
-    const response = await axios.get(API_URL);
-    return response.data;
+    const response = await fetch(`${API_URL}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+    });
+
+    const data = await response.json();
+    console.log(data);
+
+    return null;
   } catch (error) {
     console.error('Error fetching tasks:', error);
     throw error;
