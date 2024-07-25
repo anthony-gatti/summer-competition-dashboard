@@ -1,6 +1,6 @@
 const API_URL = 'http://localhost:5001/team';
 
-export const getTeamPoints = async (number: number) => {
+export const getTeamPoints = async (number: number) => { // Needs to be fixed 
   try {
     const response = await fetch(`${API_URL}/points`, {
       method: 'POST',
