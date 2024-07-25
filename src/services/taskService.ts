@@ -15,7 +15,7 @@ export const getTasks = async () => {
     const data = await response.json();
     console.log(data);
 
-    return null;
+    return data;
   } catch (error) {
     console.error('Error fetching tasks:', error);
     throw error;

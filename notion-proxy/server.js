@@ -36,7 +36,7 @@ app.post('/team/points', async (req, res) => {
       }
     });
 
-    console.log(`Received response from Notion API: ${JSON.stringify(response.data)}\n`);
+    // console.log(`Received response from Notion API: ${JSON.stringify(response.data)}\n`);
 
     let totalPoints = 0;
 
@@ -51,6 +51,46 @@ app.post('/team/points', async (req, res) => {
     console.error('Error occurred while fetching data from Notion API:', error.message);
   }
 });
+
+app.post('/task', async (req, res) => {  
+    try {      
+      const response = await axios.post(`https://api.notion.com/v1/databases/${process.env.TASK_DB}/query`, {
+      }, {
+        headers: {
+          'Authorization': `${process.env.NOTION_KEY}`,
+          'Content-Type': 'application/json',
+          'Notion-Version': '2022-06-28'
+        }
+      });
+  
+      //console.log(`Received response from Notion API: ${JSON.stringify(response.data)}\n`);
+
+      const task_array = [];
+
+      response.data.results.forEach(page => {
+        let task = { 
+            task_id: page.properties.task_id.formula.string,
+            task_name: page.properties.task_name.title.map( item => item.plain_text).join(''),
+            description: page.properties.description.rich_text.map( item => item.plain_text).join(''),
+            points: page.properties.points.number,
+            restrictions: page.properties.restrictions.rich_text.map( item => item.plain_text).join(''),
+            team: false,
+            repititions: page.properties.repititions.number,
+        }
+
+        if(page.properties.Team.number === 1){
+            task.team = true;
+        }
+
+        task_array.push(task);
+      });
+  
+  
+      res.json(task_array);
+    } catch (error) {
+      console.error('Error occurred while fetching data from Notion API:', error.message);
+    }
+  });
 
 app.listen(port, () => {
   console.log(`Proxy server running at http://localhost:${port}`);
