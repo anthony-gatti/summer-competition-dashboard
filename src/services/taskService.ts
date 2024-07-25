@@ -42,13 +42,17 @@ export const getTaskByName = async (name: string) => {
 
 export const getTasksForPerson = async (person: Person, status: string) => { // NEEDS TO BE FIXED
   try {
-    const response = await axios.get(`${API_URL}/person/${person.person_id}`, {
-      params: {
-        person_id: person.person_id,
-        status: status
-      }
+    const response = await fetch(`${API_URL}/person/${person.person_id}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ person, status })
     });
-    return response.data;
+
+    const data = await response.json();
+
+    return data;
   } catch (error) {
     console.error('Error fetching tasks:', error);
     throw error;
