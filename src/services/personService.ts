@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { Person } from '../types';
 
-const API_URL = 'http://localhost:1337/person';
+const API_URL = 'http://localhost:5001/person';
 
 export const getPeople = async () => {
   try {

@@ -161,8 +161,60 @@ app.post("/task/:name", async (req, res) => {
 
       task_array.push(task);
     });
-    
+
     res.json(task_array);
+  } catch (error) {
+    console.error(
+      "Error occurred while fetching data from Notion API:",
+      error.message
+    );
+  }
+});
+
+app.post("/person", async (req, res) => {
+  try {
+    const response = await axios.post(
+      `https://api.notion.com/v1/databases/${process.env.PERSON_DB}/query`,
+      {},
+      {
+        headers: {
+          Authorization: `${process.env.NOTION_KEY}`,
+          "Content-Type": "application/json",
+          "Notion-Version": "2022-06-28",
+        },
+      }
+    );
+
+    //console.log(`Received response from Notion API: ${JSON.stringify(response.data)}\n`);
+
+    const person_array = [];
+
+    response.data.results.forEach((page) => {
+      let person = {
+        person_id: page.properties.person_id.formula.string,
+        person_name: page.properties.person_name.title
+          .map((item) => item.plain_text)
+          .join(""),
+        team_number: page.properties.team_number.relation
+          .map((item) => item.id)
+          .join(""),
+      };
+      switch(person.team_number) {
+        case '146ad3be-b221-422d-8dde-d0e4c2fd6314':
+            person.team_number = 1;
+            break;
+        case 'bb16b126-976e-45bf-bcbd-067342ff0e05':
+            person.team_number = 2;
+            break;
+        case '7599ad5f-9949-4fad-ba30-2a6dbfaaacf4':
+            person.team_number = 3;
+            break;
+        default: person.team_number = 0;
+      }
+      person_array.push(person);
+    });
+    console.log(person_array);
+    res.json(person_array);
   } catch (error) {
     console.error(
       "Error occurred while fetching data from Notion API:",
