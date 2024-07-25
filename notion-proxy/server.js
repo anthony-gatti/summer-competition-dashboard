@@ -192,7 +192,7 @@ app.post("/person", async (req, res) => {
     response.data.results.forEach((page) => {
       let person = {
         person_id: page.properties.person_id.formula.string,
-        person_name: page.properties.person_name.title
+        name: page.properties.person_name.title
           .map((item) => item.plain_text)
           .join(""),
         team_number: page.properties.team_number.relation
