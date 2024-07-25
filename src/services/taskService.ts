@@ -40,6 +40,25 @@ export const getTaskByName = async (name: string) => {
   }
 }
 
+export const getTaskByCompletion = async (completion_id: string) => {
+  try {
+    const response = await fetch(`${API_URL}/${completion_id}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ completion_id })
+    });
+
+    const data = await response.json();
+
+    return data[0];
+  } catch (error) {
+    console.error('Error fetching tasks:', error);
+    throw error;
+  }
+}
+
 export const getTasksForPerson = async (person: Person, status: string) => { // NEEDS TO BE FIXED
   try {
     const response = await fetch(`${API_URL}/person/${person.person_id}`, {
