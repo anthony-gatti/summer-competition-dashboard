@@ -34,7 +34,7 @@ export const getPersonByName = async (name: string) => { // NEEDS TO BE FIXED
 
     const data = await response.json();
 
-    return data;
+    return data[0];
   } catch (error) {
     console.error('Error fetching tasks:', error);
     throw error;

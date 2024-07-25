@@ -13,7 +13,7 @@ export const getTasks = async () => {
     });
 
     const data = await response.json();
-    
+
     return data;
   } catch (error) {
     console.error('Error fetching tasks:', error);
@@ -33,7 +33,7 @@ export const getTaskByName = async (name: string) => {
 
     const data = await response.json();
 
-    return data;
+    return data[0];
   } catch (error) {
     console.error('Error fetching tasks:', error);
     throw error;

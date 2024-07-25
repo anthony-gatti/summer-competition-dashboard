@@ -200,6 +200,7 @@ function SubmissionForm({
               value={selectedPerson?.name}
               onChange={async (e) => {
                 const data = await getPersonByName(e.target.value);
+                console.log(data);
                 setSelectedPerson(data);
               }}
             >
@@ -221,7 +222,8 @@ function SubmissionForm({
               value={selectedTask?.task_name}
               onChange={async (e) => {
                 const data = await getTaskByName(e.target.value);
-                setSelectedTask(data[0]);
+                console.log(data);
+                setSelectedTask(data);
               }}
             >
               <option value="" disabled>
