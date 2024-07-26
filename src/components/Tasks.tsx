@@ -4,7 +4,6 @@ import {
   getTaskByName,
   getTasks,
   getTasksForPerson,
-  getTasksForTeam,
 } from "../services/taskService";
 import { Task, Person } from "../types";
 import "./Tasks.css";
@@ -156,7 +155,7 @@ function SubmissionForm({
         selectedPerson.name !== "Team 3"
       ) {
         try {
-          const data = await getTasksForPerson(selectedPerson, "available");
+          const data = await getTasksForPerson(selectedPerson, "available", "person");
           setAvailableTasks(data);
         } catch (error) {
           console.error("Failed to fetch tasks:", error);
@@ -170,7 +169,7 @@ function SubmissionForm({
               selectedPerson.name === "Team 3")
           ) {
             console.log("SELECTED PERSON: ", selectedPerson);
-            const data = await getTasksForTeam(selectedPerson, "available");
+            const data = await getTasksForPerson(selectedPerson, "available", "team");
             setAvailableTasks(data);
           } else {
             const data = await getTasks();
@@ -299,16 +298,16 @@ export default function Tasks({
           } else {
             const team_name = "Team " + team;
             const team_obj = await getPersonByName(team_name);
-            const data = await getTasksForTeam(team_obj, "available");
+            const data = await getTasksForPerson(team_obj, "available", "team");
             setTasks(data);
 
-            const compData = await getTasksForTeam(team_obj, "completed");
+            const compData = await getTasksForPerson(team_obj, "completed", "team");
             setCompletedTasks(compData);
           }
         } else {
-          const data = await getTasksForPerson(person, "available");
+          const data = await getTasksForPerson(person, "available", "person");
           setTasks(data);
-          const compData = await getTasksForPerson(person, "completed");
+          const compData = await getTasksForPerson(person, "completed", "person");
           setCompletedTasks(compData);
         }
       } catch (error) {

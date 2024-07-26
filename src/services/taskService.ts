@@ -59,7 +59,7 @@ export const getTaskByCompletion = async (completion_id: string) => {
   }
 }
 
-export const getTasksForPerson = async (person: Person, status: string) => { // NEEDS TO BE FIXED
+export const getTasksForPerson = async (person: Person, status: string, type: string) => {
   try {
     const response = await fetch(`${API_URL}/person/${person.person_id}`, {
       method: 'POST',
@@ -83,13 +83,27 @@ export const getTasksForPerson = async (person: Person, status: string) => { // 
     const available_array: Task[] = [];
     const complete_array: Task[] = [];
 
-    tasks.forEach((task: Task) => {
-      if(task.repititions > 0){
-        available_array.push(task);
-      } else {
-        complete_array.push(task);
-      }
-    })
+    if(type === 'person') {
+      tasks.forEach((task: Task) => {
+        if(!task.team){
+          if(task.repititions > 0){
+            available_array.push(task);
+          } else {
+            complete_array.push(task);
+          }
+        }
+      })
+    }else {
+      tasks.forEach((task: Task) => {
+        if(task.team){
+          if(task.repititions > 0){
+            available_array.push(task);
+          } else {
+            complete_array.push(task);
+          }
+        }
+      })
+    }
 
     if(status === 'available'){
       return available_array;
@@ -97,21 +111,6 @@ export const getTasksForPerson = async (person: Person, status: string) => { // 
       return complete_array;
     }
 
-  } catch (error) {
-    console.error('Error fetching tasks:', error);
-    throw error;
-  }
-};
-
-export const getTasksForTeam = async (person: Person, status: string) => { // NEEDS TO BE FIXED
-  try {
-    const response = await axios.get(`${API_URL}/team/${person.person_id}`, {
-      params: {
-        person_id: person.person_id,
-        status: status
-      }
-    });
-    return response.data;
   } catch (error) {
     console.error('Error fetching tasks:', error);
     throw error;
