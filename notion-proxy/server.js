@@ -419,23 +419,19 @@ app.post("/task/person/:id", async (req, res) => {
 
     response.data.results.forEach((page) => {
       let person_completion = false;
-      page.properties.person_relation.relation.forEach((uuid) => {
+      page.properties.person.relation.forEach((uuid) => {
         const id = uuid.id.replace(/-/g, '');
         if (person_id === id) {
           person_completion = true;
         }
       });
       if (person_completion) {
-        console.log("completion: ", page.properties.completion_id)
-        console.log("task: ", page.properties.task);
         page.properties.task.relation.forEach((task_id) => {
           completion_array.push(task_id.id.replace(/-/g, ''))
         });
       }
     });
 
-    console.log(completion_array);
-console.log("reached return");
     res.json(completion_array);
   } catch (error) {
     console.error(
