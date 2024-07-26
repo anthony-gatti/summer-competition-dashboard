@@ -397,7 +397,6 @@ app.post("/person/:name", async (req, res) => {
 
 app.post("/task/person/:id", async (req, res) => {
   const person_id = req.body.person.person_id;
-  console.log("PERSON ID: ", person_id);
 
   try {
     const response = await axios.post(

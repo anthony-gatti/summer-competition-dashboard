@@ -71,7 +71,7 @@ export const getTasksForPerson = async (person: Person, status: string) => { // 
 
     const completions = await response.json();
     const tasks = await getTasks();
-
+    
     tasks.forEach((task: Task) => {
       completions.forEach((comp: string) => {
         if(task.task_id === comp) {

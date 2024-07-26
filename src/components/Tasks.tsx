@@ -156,7 +156,7 @@ function SubmissionForm({
         selectedPerson.name !== "Team 3"
       ) {
         try {
-          const data = await getTasksForPerson(selectedPerson, "complete");
+          const data = await getTasksForPerson(selectedPerson, "available");
           setAvailableTasks(data);
         } catch (error) {
           console.error("Failed to fetch tasks:", error);
