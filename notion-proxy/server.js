@@ -171,69 +171,70 @@ app.post("/task/:name", async (req, res) => {
   }
 });
 
-app.post("/task/:id", async (req, res) => { // MAYBE TRASH
-    const completion_id = req.body.completion_id;
-    console.log("COMPLETION ID: ", completion_id);
-    process.exit(99);
-  
-    try {
-      const response = await axios.post(
-        `https://api.notion.com/v1/databases/${process.env.TASK_DB}/query`,
-        {
-          filter: {
-            property: "completions",
-            relation: {
-              contains: completion_id,
-            },
+app.post("/task/:id", async (req, res) => {
+  // MAYBE TRASH
+  const completion_id = req.body.completion_id;
+  console.log("COMPLETION ID: ", completion_id);
+  process.exit(99);
+
+  try {
+    const response = await axios.post(
+      `https://api.notion.com/v1/databases/${process.env.TASK_DB}/query`,
+      {
+        filter: {
+          property: "completions",
+          relation: {
+            contains: completion_id,
           },
         },
-        {
-          headers: {
-            Authorization: `${process.env.NOTION_KEY}`,
-            "Content-Type": "application/json",
-            "Notion-Version": "2022-06-28",
-          },
-        }
-      );
+      },
+      {
+        headers: {
+          Authorization: `${process.env.NOTION_KEY}`,
+          "Content-Type": "application/json",
+          "Notion-Version": "2022-06-28",
+        },
+      }
+    );
 
-      //console.log(response.data);
-  
-      //console.log(`Received response from Notion API: ${JSON.stringify(response.data)}\n`);
-  
-      const task_array = [];
-  
-      response.data.results.forEach((page) => {
-        let task = {
-          task_id: page.properties.task_id.formula.string,
-          task_name: page.properties.task_name.title
-            .map((item) => item.plain_text)
-            .join(""),
-          description: page.properties.description.rich_text
-            .map((item) => item.plain_text)
-            .join(""),
-          points: page.properties.points.number,
-          restrictions: page.properties.restrictions.rich_text
-            .map((item) => item.plain_text)
-            .join(""),
-          team: false,
-          repititions: page.properties.repititions.number,
-        };
-  
-        if (page.properties.Team.number === 1) {
-          task.team = true;
-        }
-  
-        task_array.push(task);
-      });
-  
-      res.json(task_array);
-    } catch (error) {
-      console.error(
-        "Error occurred while fetching data from Notion API:",
-        error.message
-      );
-    }
-  });
+    //console.log(response.data);
+
+    //console.log(`Received response from Notion API: ${JSON.stringify(response.data)}\n`);
+
+    const task_array = [];
+
+    response.data.results.forEach((page) => {
+      let task = {
+        task_id: page.properties.task_id.formula.string,
+        task_name: page.properties.task_name.title
+          .map((item) => item.plain_text)
+          .join(""),
+        description: page.properties.description.rich_text
+          .map((item) => item.plain_text)
+          .join(""),
+        points: page.properties.points.number,
+        restrictions: page.properties.restrictions.rich_text
+          .map((item) => item.plain_text)
+          .join(""),
+        team: false,
+        repititions: page.properties.repititions.number,
+      };
+
+      if (page.properties.Team.number === 1) {
+        task.team = true;
+      }
+
+      task_array.push(task);
+    });
+
+    res.json(task_array);
+  } catch (error) {
+    console.error(
+      "Error occurred while fetching data from Notion API:",
+      error.message
+    );
+  }
+});
 
 app.post("/person", async (req, res) => {
   try {
@@ -383,7 +384,7 @@ app.post("/person/:name", async (req, res) => {
 //         task_array.push(id);
 //       });
 //     });
-    
+
 //     res.json(task_array);
 //   } catch (error) {
 //     console.error(
@@ -393,21 +394,14 @@ app.post("/person/:name", async (req, res) => {
 //   }
 // });
 
-app.post("/task/person/:id", async (req, res) => { 
+app.post("/task/person/:id", async (req, res) => {
   const person_id = req.body.person.person_id;
   console.log("PERSON ID: ", person_id);
 
   try {
     const response = await axios.post(
       `https://api.notion.com/v1/databases/${process.env.COMPLETION_DB}/query`, //FILTERING IS CURRENTLY NOT WORKING
-      {
-        filter: {
-          property: "person_relation",
-          relation: {
-            contains: person_id,
-          },
-        },
-      },
+      {},
       {
         headers: {
           Authorization: `${process.env.NOTION_KEY}`,
@@ -416,20 +410,32 @@ app.post("/task/person/:id", async (req, res) => {
         },
       }
     );
-    console.log("RESPONSE: ", response);
+    //console.log("RESPONSE: ", response.data);
 
     //console.log(`Received response from Notion API: ${JSON.stringify(response.data)}\n`);
 
-    const task_array = [];
+    const completion_array = [];
 
     response.data.results.forEach((page) => {
-        console.log(page.properties);
-      page.properties.completions.relation.forEach((id) => {
-        task_array.push(id);
+      let person_completion = false;
+      page.properties.person_relation.relation.forEach((uuid) => {
+        const id = uuid.id.replace(/-/g, '');
+        if (person_id === id) {
+          person_completion = true;
+        }
       });
+      if (person_completion) {
+        console.log("completion: ", page.properties.completion_id)
+        console.log("task: ", page.properties.task);
+        page.properties.task.relation.forEach((task_id) => {
+          completion_array.push(task_id.id.replace(/-/g, ''))
+        });
+      }
     });
-    
-    res.json(task_array);
+
+    console.log(completion_array);
+console.log("reached return");
+    res.json(completion_array);
   } catch (error) {
     console.error(
       "Error occurred while fetching data from Notion API:",
