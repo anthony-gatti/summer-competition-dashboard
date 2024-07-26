@@ -21,7 +21,7 @@ app.post("/team/points", async (req, res) => {
   const teamNumber = req.body.number;
 
   try {
-    console.log(`Received request for team number: ${teamNumber}`);
+    // console.log(`Received request for team number: ${teamNumber}`);
 
     const response = await axios.post(
       `https://api.notion.com/v1/databases/${process.env.TEAM_DB}/query`,
@@ -47,7 +47,7 @@ app.post("/team/points", async (req, res) => {
     let totalPoints = 0;
 
     response.data.results.forEach((page) => {
-      const points = page.properties.total_points.number;
+      const points = page.properties.total_points.formula.number;
       totalPoints += points;
     });
 
