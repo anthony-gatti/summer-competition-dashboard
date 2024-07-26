@@ -440,6 +440,49 @@ app.post("/task/person/:id", async (req, res) => {
   }
 });
 
+app.post("/person/:name/points", async (req, res) => {
+  const name = req.body.person.name;
+
+  try {
+    // console.log(`Received request for person: ${name}`);
+
+    const response = await axios.post(
+      `https://api.notion.com/v1/databases/${process.env.PERSON_DB}/query`,
+      {
+        filter: {
+          property: "person_name",
+          title: {
+            equals: name,
+          },
+        },
+      },
+      {
+        headers: {
+          Authorization: `${process.env.NOTION_KEY}`,
+          "Content-Type": "application/json",
+          "Notion-Version": "2022-06-28",
+        },
+      }
+    );
+
+    // console.log(`Received response from Notion API: ${JSON.stringify(response.data)}\n`);
+
+    let total_points = 0;
+
+    response.data.results.forEach((page) => {
+      const points = page.properties.points.formula.number;
+      total_points += points;
+    });
+
+    res.json({ total_points });
+  } catch (error) {
+    console.error(
+      "Error occurred while fetching data from Notion API:",
+      error.message
+    );
+  }
+})
+
 app.listen(port, () => {
   console.log(`Proxy server running at http://localhost:${port}`);
 });

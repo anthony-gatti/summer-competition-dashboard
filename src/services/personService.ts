@@ -22,7 +22,7 @@ export const getPeople = async () => {
   }
 };
 
-export const getPersonByName = async (name: string) => { // NEEDS TO BE FIXED
+export const getPersonByName = async (name: string) => {
   try {
     const response = await fetch(`${API_URL}/${name}`, {
       method: 'POST',
@@ -31,9 +31,9 @@ export const getPersonByName = async (name: string) => { // NEEDS TO BE FIXED
       },
       body: JSON.stringify({ name })
     });
-    
-    const data = await response.json();
 
+    const data = await response.json();
+    console.log(data);
     return data[0];
   } catch (error) {
     console.error('Error fetching tasks:', error);
@@ -43,14 +43,21 @@ export const getPersonByName = async (name: string) => { // NEEDS TO BE FIXED
 
 export const getPersonPoints = async (person: Person) => { // NEEDS TO BE FIXED
   try {
-    const response = await axios.get(`${API_URL}/${person}/points`, {
-      params: {
-        person_id: person.person_id
-      }
+    const response = await fetch(`${API_URL}/${person.name}/points`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ person })
     });
-    return response.data;
+
+    const data = await response.json();
+
+    console.log(data);
+
+    return data;
   } catch (error) {
-    console.error('Error fetching points:', error);
+    console.error('Error fetching tasks:', error);
     throw error;
   }
 };
