@@ -5,6 +5,9 @@ const dotenv = require("dotenv");
 
 dotenv.config();
 
+const { Client } = require("@notionhq/client");
+const notion = new Client({ auth: process.env.NOTION_KEY });
+
 const app = express();
 const port = 5001;
 
@@ -352,49 +355,6 @@ app.post("/person/:name", async (req, res) => {
   }
 });
 
-// app.post("/task/person/:id", async (req, res) => { // GETS COMPLETIONS from A PERSON ID
-//   const name = req.body.person.name;
-
-//   try {
-//     const response = await axios.post(
-//       `https://api.notion.com/v1/databases/${process.env.PERSON_DB}/query`,
-//       {
-//         filter: {
-//           property: "person_name",
-//           title: {
-//             equals: name,
-//           },
-//         },
-//       },
-//       {
-//         headers: {
-//           Authorization: `${process.env.NOTION_KEY}`,
-//           "Content-Type": "application/json",
-//           "Notion-Version": "2022-06-28",
-//         },
-//       }
-//     );
-
-//     //console.log(`Received response from Notion API: ${JSON.stringify(response.data)}\n`);
-
-//     const task_array = [];
-
-//     response.data.results.forEach((page) => {
-//         console.log(page.properties.completions);
-//       page.properties.completions.relation.forEach((id) => {
-//         task_array.push(id);
-//       });
-//     });
-
-//     res.json(task_array);
-//   } catch (error) {
-//     console.error(
-//       "Error occurred while fetching data from Notion API:",
-//       error.message
-//     );
-//   }
-// });
-
 app.post("/task/person/:id", async (req, res) => {
   const person_id = req.body.person.person_id;
 
@@ -419,14 +379,14 @@ app.post("/task/person/:id", async (req, res) => {
     response.data.results.forEach((page) => {
       let person_completion = false;
       page.properties.person.relation.forEach((uuid) => {
-        const id = uuid.id.replace(/-/g, '');
+        const id = uuid.id.replace(/-/g, "");
         if (person_id === id) {
           person_completion = true;
         }
       });
       if (person_completion) {
         page.properties.task.relation.forEach((task_id) => {
-          completion_array.push(task_id.id.replace(/-/g, ''))
+          completion_array.push(task_id.id.replace(/-/g, ""));
         });
       }
     });
@@ -481,7 +441,81 @@ app.post("/person/:name/points", async (req, res) => {
       error.message
     );
   }
-})
+});
+
+app.post("/completion", async (req, res) => {
+  const task_name = req.body.task.task_name;
+  const person = req.body.person.person_id;
+  const task = req.body.task.task_id;
+  const notes = req.body.comment;
+  const link = req.body.link;
+
+  try {
+    console.log(`Received post request for completion`);
+
+    const response = await notion.pages.create({
+      parent: {
+        type: "database_id",
+        database_id: process.env.COMPLETION_DB,
+      },
+      properties: {
+        task_name: {
+          title: [
+            {
+              type: "text",
+              text: {
+                content: task_name,
+              },
+            },
+          ],
+        },
+        person: {
+          relation: [
+            {
+              id: person,
+            },
+          ],
+        },
+        task: {
+          relation: [
+            {
+              id: task,
+            },
+          ],
+        },
+        notes: {
+          rich_text: [
+            {
+              type: "text",
+              text: {
+                content: notes,
+              },
+            },
+          ],
+        },
+        link: {
+          rich_text: [
+            {
+              type: "text",
+              text: {
+                content: link,
+              },
+            },
+          ],
+        },
+      },
+    });
+
+    // console.log(`Received response from Notion API: ${JSON.stringify(response.data)}\n`);
+
+    res.json(response);
+  } catch (error) {
+    console.error(
+      "Error occurred while posting data to Notion API:",
+      error.message
+    );
+  }
+});
 
 app.listen(port, () => {
   console.log(`Proxy server running at http://localhost:${port}`);

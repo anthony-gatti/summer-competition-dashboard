@@ -41,7 +41,7 @@ export const getPersonByName = async (name: string) => {
   }
 }
 
-export const getPersonPoints = async (person: Person) => { // NEEDS TO BE FIXED
+export const getPersonPoints = async (person: Person) => {
   try {
     const response = await fetch(`${API_URL}/${person.name}/points`, {
       method: 'POST',

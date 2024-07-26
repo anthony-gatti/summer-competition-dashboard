@@ -1,21 +1,22 @@
-import axios from 'axios';
 import { Person, Task } from '../types';
 
-const API_URL = 'http://localhost:1337/completion';
+const API_URL = 'http://localhost:5001/completion';
 
 export const postCompletion = async (person: Person, task: Task, comment: string, link: string) => { // NEEDS TO BE FIXED
   try {
-    const response = await axios.post(API_URL, {
-      params: {
-        person_id: person.person_id,
-        task_id: task.task_id,
-        comment: comment,
-        link: link
-      }
+    const response = await fetch(`${API_URL}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ person, task, comment, link })
     });
-    return response.data;
+    const data = await response.json();
+
+    return data;
+
   } catch (error) {
-    console.error('Error fetching points:', error);
+    console.error('Error posting completion:', error);
     throw error;
   }
 };
