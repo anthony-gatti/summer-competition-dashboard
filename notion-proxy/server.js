@@ -155,7 +155,7 @@ app.post("/task/:name", async (req, res) => {
         repititions: page.properties.repititions.number,
       };
 
-      if (page.properties.Team.number === 1) {
+      if (page.properties.team.number === 1) {
         task.team = true;
       }
 
