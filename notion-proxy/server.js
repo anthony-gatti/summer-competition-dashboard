@@ -264,14 +264,15 @@ app.post("/person", async (req, res) => {
           .map((item) => item.id)
           .join(""),
       };
+
       switch (person.team_number) {
-        case "146ad3be-b221-422d-8dde-d0e4c2fd6314":
+        case process.env.TEAM1_ID:
           person.team_number = 1;
           break;
-        case "bb16b126-976e-45bf-bcbd-067342ff0e05":
+        case process.env.TEAM2_ID:
           person.team_number = 2;
           break;
-        case "7599ad5f-9949-4fad-ba30-2a6dbfaaacf4":
+        case process.env.TEAM3_ID:
           person.team_number = 3;
           break;
         default:
