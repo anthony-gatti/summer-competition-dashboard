@@ -56,19 +56,20 @@
 }
 
 .task-content {
-    height: stretch;
-    width:stretch;
-    padding-right: 1.4rem;
-    padding-left: 1.4em;
-    padding-top: 0.8rem;
-    padding-bottom: 0.8rem;
+    padding-right: 1.7rem;
+    padding-left: 1.7rem;
+    padding-top: 1.3rem;
 }
 
 .task-description {
-    height: stretch;
-    width: stretch;
     font-size: 1rem;
-    overflow: scroll;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    white-space: normal;
+    max-height: 4.5rem;
 }
 
 .team-identifier {
