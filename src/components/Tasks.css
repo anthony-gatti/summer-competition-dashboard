@@ -11,6 +11,7 @@
 .task-header {
     font-size: 1.2rem;
     font-weight: 900;
+    color: rgba(53, 70, 35);
 }
 
 .search-bar {
@@ -41,15 +42,16 @@
     position: relative;
     height: 100%;
     width:100%;
-    background-color: #D9D9D9;
+    background-color: rgba(53, 70, 35, 0.362);
     border-radius: 10px;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
 .task-container:hover {
     position: relative;
     height: 100%;
     width:100%;
-    background-color: #cccccc;
+    background-color: rgba(38, 50, 25, 0.453);
     border-radius: 10px;
 }
 
@@ -146,7 +148,7 @@
     color: white;
     font-weight: 800;
     font-size: 1.1rem;
-    background-color: rgb(86, 151, 255);
+    background-color: rgba(53, 70, 35);
     cursor: pointer;
     height: 2rem;
     width: 12rem;
@@ -158,7 +160,7 @@
     color: white;
     font-weight: 800;
     font-size: 1.1rem;
-    background-color: rgb(64, 135, 249);
+    background-color: rgb(44, 58, 29);
     cursor: pointer;
     height: 2rem;
     width: 12rem;

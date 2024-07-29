@@ -14,8 +14,8 @@
 .header-item1 {
     display: flex;
     font-size: 0.9rem;
-    color:#000000;    
-    text-shadow: 1px 0 #000000;
+    color:rgba(53, 70, 35);    
+    text-shadow: 1px 0 rgba(53, 70, 35);
     letter-spacing:1px;
     font-weight:bold;
     width: 50%;
@@ -26,8 +26,8 @@
 .header-item2 {
     display: flex;
     font-size: 0.9rem;
-    color:#000000;    
-    text-shadow: 1px 0 #000000;
+    color:rgba(53, 70, 35);    
+    text-shadow: 1px 0 rgba(53, 70, 35);
     letter-spacing:1px;
     font-weight:bold;
     width: 50%;
@@ -45,6 +45,7 @@
 
 .logo-icon {
     display: inline-block;
+    fill: rgba(53, 70, 35);
     width: 3rem;
     height: 3rem;
 }
