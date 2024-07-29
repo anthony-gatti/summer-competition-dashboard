@@ -345,7 +345,10 @@ export default function Tasks({
   return (
     <>
       <div className="task-bar">
-        <div className="task-header">Available tasks:</div>
+        <div className="header-container">
+          <div className="task-header">Available tasks:</div>
+          <div className="legend">T: Task eligible for 1 completion per team</div>
+        </div>
         <input
           className="search-bar"
           type="text"
