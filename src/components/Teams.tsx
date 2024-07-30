@@ -3,6 +3,7 @@ import { getTeamPoints } from "../services/teamService";
 import { getPersonByName, getPersonPoints } from "../services/personService";
 import "./Teams.css";
 import { Person } from "../types";
+import { PieChart, Pie, Cell, Tooltip } from 'recharts';
 
 function PersonButton({
   name,
@@ -22,6 +23,41 @@ function PersonButton({
     </button>
   );
 }
+
+interface PercentagePieChartProps {
+  percentage: number; // Value between 0 and 100
+}
+
+const COLORS = ['#003784', '#B7BCB1'];
+
+const PercentagePieChart: React.FC<PercentagePieChartProps> = ({ percentage }) => {
+  const data = [
+    { name: 'Completed', value: percentage },
+    { name: 'Remaining', value: 100 - percentage },
+  ];
+
+  return (
+    <PieChart width={150} height={150}>
+      <Pie
+        data={data}
+        cx={70}
+        cy={70}
+        startAngle={90}
+        endAngle={-270}
+        innerRadius={30}
+        outerRadius={70}
+        fill="#8884d8"
+        paddingAngle={5}
+        dataKey="value"
+      >
+        {data.map((entry, index) => (
+          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+        ))}
+      </Pie>
+      <Tooltip formatter={(value) => `${value}%`} />
+    </PieChart>
+  );
+};
 
 function Team1Button({
   number,
@@ -43,9 +79,13 @@ function Team1Button({
   ) => void;
 }) {
   let name = "TEAM " + number;
+  let graphName = "Team " + number;
   let max = 9700;
+  let percent = points / max;
+  percent = Math.round(percent * 10000) / 100;
   if (selected && person !== undefined) {
-    name = person.name.toUpperCase() + "'S ";
+    name = person.name.toUpperCase() + "'S";
+    graphName = person.name + "'s";
     max = 1940;
   }
   return (
@@ -68,6 +108,15 @@ function Team1Button({
             ))}
           </div>
         </div>
+        {selected && <div className="team-info">
+          <div className="progress-chart">
+            <div className="graph">
+              <PercentagePieChart percentage={percent} />
+            </div>
+            <div className="graph-label">{graphName} progress</div>
+          </div>
+          <div className="team-leaderboard"></div>
+        </div>}
       </div>
     </div>
   );
@@ -118,6 +167,10 @@ function Team2Button({
             ))}
           </div>
         </div>
+        {selected && <div className="team-info">
+          <div className="progress-chart"></div>
+          <div className="team-leaderboard"></div>
+        </div>}
       </div>
     </div>
   );
@@ -168,6 +221,10 @@ function Team3Button({
             ))}
           </div>
         </div>
+        {selected && <div className="team-info">
+          <div className="progress-chart"></div>
+          <div className="team-leaderboard"></div>
+        </div>}
       </div>
     </div>
   );
