@@ -51,7 +51,7 @@ function Team1Button({
   return (
     <div className={`team ${selected ? "selected" : ""}`} onClick={onTeamClick}>
       <div className="team-container">
-        <div className="team-content">
+        <div className={`team-content ${selected ? "selected" : ""}`}>
           <div className="team-header">{name} POINTS</div>
           <div className="points">
             <div className="current">{points}</div>
@@ -101,7 +101,7 @@ function Team2Button({
   return (
     <div className={`team ${selected ? "selected" : ""}`} onClick={onTeamClick}>
       <div className="team-container">
-        <div className="team-content">
+        <div className={`team-content ${selected ? "selected" : ""}`}>
           <div className="team-header">{name} POINTS</div>
           <div className="points">
             <div className="current">{points}</div>
@@ -151,7 +151,7 @@ function Team3Button({
   return (
     <div className={`team ${selected ? "selected" : ""}`} onClick={onTeamClick}>
       <div className="team-container">
-        <div className="team-content">
+        <div className={`team-content ${selected ? "selected" : ""}`}>
           <div className="team-header">{name} POINTS</div>
           <div className="points">
             <div className="current">{points}</div>
@@ -244,30 +244,30 @@ export default function Teams({
 
   return (
     <div className="team-list">
-      <Team1Button
+      {(team === 1 || team === null) && <Team1Button
         number={1}
-        selected={team === 1 || team === null}
+        selected={team === 1}
         points={team1Points}
         person={team === 1 ? person : undefined}
         onTeamClick={() => onTeamClick(1)}
         onPersonClick={onPersonClick}
-      />
-      <Team2Button
+      />}
+      {(team === 2 || team === null) && <Team2Button
         number={2}
-        selected={team === 2 || team === null}
+        selected={team === 2}
         points={team2Points}
         person={team === 2 ? person : undefined}
         onTeamClick={() => onTeamClick(2)}
         onPersonClick={onPersonClick}
-      />
-      <Team3Button
+      />}
+      {(team === 3 || team === null) && <Team3Button
         number={3}
-        selected={team === 3 || team === null}
+        selected={team === 3}
         points={team3Points}
         person={team === 3 ? person : undefined}
         onTeamClick={() => onTeamClick(3)}
         onPersonClick={onPersonClick}
-      />
+      />}
     </div>
   );
 }

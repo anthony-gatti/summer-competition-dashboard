@@ -16,6 +16,7 @@
 }
 
 .team.selected {
+    width: 100%;
     color:#000000;    
     text-shadow: 1px 0 #000000;
     letter-spacing:1px;
@@ -23,16 +24,6 @@
 
 .team-container {
     background-color: rgb(53, 70, 35);
-    color: rgb(255, 255, 255);
-    height: 100%;
-    width: 100%;
-    border-radius: 15px;
-    font-family:Arial, Helvetica, sans-serif;
-    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-}
-
-.team:not(.selected) .team-container {
-    background-color: rgba(53, 70, 35, 0.362);
     color: rgb(255, 255, 255);
     height: 100%;
     width: 100%;
@@ -56,6 +47,10 @@
     flex-direction: column;
     align-items: start;
     justify-content: center;
+}
+
+.team-content.selected {
+    width: 32.5%
 }
 
 .team-header {
