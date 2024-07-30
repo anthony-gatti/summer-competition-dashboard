@@ -3,7 +3,16 @@ import { getTeamPoints } from "../services/teamService";
 import { getPersonByName, getPersonPoints } from "../services/personService";
 import "./Teams.css";
 import { Person } from "../types";
-import { PieChart, Pie, Cell, Tooltip } from 'recharts';
+import {
+  PieChart,
+  Pie,
+  Cell,
+  Tooltip,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+} from "recharts";
 
 function PersonButton({
   name,
@@ -25,15 +34,22 @@ function PersonButton({
 }
 
 interface PercentagePieChartProps {
-  percentage: number; // Value between 0 and 100
+  percentage: number;
 }
 
-const COLORS = ['#003784', '#B7BCB1'];
+interface LeaderboardEntryProps {
+  name: string;
+  getPoints: (name: string) => Promise<any>;
+}
 
-const PercentagePieChart: React.FC<PercentagePieChartProps> = ({ percentage }) => {
+const COLORS = ["#7D9CB3", "#B7BCB1"];
+
+const PercentagePieChart: React.FC<PercentagePieChartProps> = ({
+  percentage,
+}) => {
   const data = [
-    { name: 'Completed', value: percentage },
-    { name: 'Remaining', value: 100 - percentage },
+    { name: "Completed", value: percentage },
+    { name: "Remaining", value: 100 - percentage },
   ];
 
   return (
@@ -57,6 +73,61 @@ const PercentagePieChart: React.FC<PercentagePieChartProps> = ({ percentage }) =
       <Tooltip formatter={(value) => `${value}%`} />
     </PieChart>
   );
+};
+
+const LeaderboardEntry: React.FC<LeaderboardEntryProps> = ({
+  name,
+  getPoints,
+}) => {
+  const [points, setPoints] = useState<number>(0);
+  const percentage: number = 1940 > 0 ? (points / 1940) * 100 : 0;
+  const remaining = 100 - percentage;
+
+  useEffect(() => {
+    const fetchPoints = async () => {
+      const fetchedPoints = await getPoints(name);
+      setPoints(fetchedPoints.total_points);
+    };
+    fetchPoints();
+  }, [name, getPoints]);
+
+  const data = [{ name: "Points", value: percentage, fill: COLORS[0] }];
+
+  return (
+    <div
+      className="leaderboard-entry"
+      style={{ display: "flex", alignItems: "center" }}
+    >
+      <span style={{ fontWeight: "bold", width: "15%" }}>{name}</span>
+      <div className="bar-container">
+        <BarChart
+          width={250}
+          height={30}
+          data={data}
+          layout="vertical"
+          margin={{ top: -5, right: 0, left: 0, bottom: 0 }}
+        >
+          <XAxis type="number" domain={[0, 100]} hide />
+          <YAxis type="category" dataKey="name" hide />
+          <Tooltip formatter={(value) => `${(value as number).toFixed(2)}%`} />
+          <Bar dataKey="value" fill={COLORS[0]} radius={[10, 10, 10, 10]}>
+            {data.map((entry, index) => (
+              <Cell key={`cell-${index}`} fill={entry.fill} />
+            ))}
+          </Bar>
+        </BarChart>
+      </div>
+      <span style={{ fontWeight: "bold", width: "15%" }}>
+        {points || 0} / 1940
+      </span>
+    </div>
+  );
+};
+
+const getPoints = async (name: string) => {
+  const person: Person = await getPersonByName(name);
+  const points: number = await getPersonPoints(person);
+  return points;
 };
 
 function Team1Button({
@@ -108,15 +179,25 @@ function Team1Button({
             ))}
           </div>
         </div>
-        {selected && <div className="team-info">
-          <div className="progress-chart">
-            <div className="graph">
-              <PercentagePieChart percentage={percent} />
+        {selected && (
+          <div className="team-info">
+            <div className="progress-chart">
+              <div className="graph">
+                <PercentagePieChart percentage={percent} />
+              </div>
+              <div className="graph-label">{graphName} progress</div>
             </div>
-            <div className="graph-label">{graphName} progress</div>
+            <div className="team-leaderboard">
+              {["Michael", "Kevin", "Bob", "Larissa", "Gabby"].map((name) => (
+                <LeaderboardEntry
+                  key={name}
+                  name={name}
+                  getPoints={getPoints}
+                />
+              ))}
+            </div>
           </div>
-          <div className="team-leaderboard"></div>
-        </div>}
+        )}
       </div>
     </div>
   );
@@ -145,7 +226,7 @@ function Team2Button({
   let max = 9700;
   if (selected && person !== undefined) {
     name = person.name.toUpperCase() + "'S ";
-    max = 1940
+    max = 1940;
   }
   return (
     <div className={`team ${selected ? "selected" : ""}`} onClick={onTeamClick}>
@@ -167,10 +248,12 @@ function Team2Button({
             ))}
           </div>
         </div>
-        {selected && <div className="team-info">
-          <div className="progress-chart"></div>
-          <div className="team-leaderboard"></div>
-        </div>}
+        {selected && (
+          <div className="team-info">
+            <div className="progress-chart"></div>
+            <div className="team-leaderboard"></div>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -221,10 +304,12 @@ function Team3Button({
             ))}
           </div>
         </div>
-        {selected && <div className="team-info">
-          <div className="progress-chart"></div>
-          <div className="team-leaderboard"></div>
-        </div>}
+        {selected && (
+          <div className="team-info">
+            <div className="progress-chart"></div>
+            <div className="team-leaderboard"></div>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -301,30 +386,36 @@ export default function Teams({
 
   return (
     <div className="team-list">
-      {(team === 1 || team === null) && <Team1Button
-        number={1}
-        selected={team === 1}
-        points={team1Points}
-        person={team === 1 ? person : undefined}
-        onTeamClick={() => onTeamClick(1)}
-        onPersonClick={onPersonClick}
-      />}
-      {(team === 2 || team === null) && <Team2Button
-        number={2}
-        selected={team === 2}
-        points={team2Points}
-        person={team === 2 ? person : undefined}
-        onTeamClick={() => onTeamClick(2)}
-        onPersonClick={onPersonClick}
-      />}
-      {(team === 3 || team === null) && <Team3Button
-        number={3}
-        selected={team === 3}
-        points={team3Points}
-        person={team === 3 ? person : undefined}
-        onTeamClick={() => onTeamClick(3)}
-        onPersonClick={onPersonClick}
-      />}
+      {(team === 1 || team === null) && (
+        <Team1Button
+          number={1}
+          selected={team === 1}
+          points={team1Points}
+          person={team === 1 ? person : undefined}
+          onTeamClick={() => onTeamClick(1)}
+          onPersonClick={onPersonClick}
+        />
+      )}
+      {(team === 2 || team === null) && (
+        <Team2Button
+          number={2}
+          selected={team === 2}
+          points={team2Points}
+          person={team === 2 ? person : undefined}
+          onTeamClick={() => onTeamClick(2)}
+          onPersonClick={onPersonClick}
+        />
+      )}
+      {(team === 3 || team === null) && (
+        <Team3Button
+          number={3}
+          selected={team === 3}
+          points={team3Points}
+          person={team === 3 ? person : undefined}
+          onTeamClick={() => onTeamClick(3)}
+          onPersonClick={onPersonClick}
+        />
+      )}
     </div>
   );
 }
