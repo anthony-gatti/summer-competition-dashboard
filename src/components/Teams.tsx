@@ -223,9 +223,13 @@ function Team2Button({
   ) => void;
 }) {
   let name = "TEAM " + number;
+  let graphName = "Team " + number;
   let max = 9700;
+  let percent = points / max;
+  percent = Math.round(percent * 10000) / 100;
   if (selected && person !== undefined) {
-    name = person.name.toUpperCase() + "'S ";
+    name = person.name.toUpperCase() + "'S";
+    graphName = person.name + "'s";
     max = 1940;
   }
   return (
@@ -250,8 +254,21 @@ function Team2Button({
         </div>
         {selected && (
           <div className="team-info">
-            <div className="progress-chart"></div>
-            <div className="team-leaderboard"></div>
+            <div className="progress-chart">
+              <div className="graph">
+                <PercentagePieChart percentage={percent} />
+              </div>
+              <div className="graph-label">{graphName} progress</div>
+            </div>
+            <div className="team-leaderboard">
+              {["Michael", "Kevin", "Bob", "Larissa", "Gabby"].map((name) => (
+                <LeaderboardEntry
+                  key={name}
+                  name={name}
+                  getPoints={getPoints}
+                />
+              ))}
+            </div>
           </div>
         )}
       </div>
@@ -279,9 +296,13 @@ function Team3Button({
   ) => void;
 }) {
   let name = "TEAM " + number;
+  let graphName = "Team " + number;
   let max = 9700;
+  let percent = points / max;
+  percent = Math.round(percent * 10000) / 100;
   if (selected && person !== undefined) {
-    name = person.name.toUpperCase() + "'S ";
+    name = person.name.toUpperCase() + "'S";
+    graphName = person.name + "'s";
     max = 1940;
   }
   return (
@@ -306,8 +327,21 @@ function Team3Button({
         </div>
         {selected && (
           <div className="team-info">
-            <div className="progress-chart"></div>
-            <div className="team-leaderboard"></div>
+            <div className="progress-chart">
+              <div className="graph">
+                <PercentagePieChart percentage={percent} />
+              </div>
+              <div className="graph-label">{graphName} progress</div>
+            </div>
+            <div className="team-leaderboard">
+              {["Michael", "Kevin", "Bob", "Larissa", "Gabby"].map((name) => (
+                <LeaderboardEntry
+                  key={name}
+                  name={name}
+                  getPoints={getPoints}
+                />
+              ))}
+            </div>
           </div>
         )}
       </div>
